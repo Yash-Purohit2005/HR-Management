@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByAudienceIn(List<AudienceType> audiences);
+    List<Notification> findTop10ByAudienceInOrderByCreatedAtDesc(List<AudienceType> audiences);
 }
 

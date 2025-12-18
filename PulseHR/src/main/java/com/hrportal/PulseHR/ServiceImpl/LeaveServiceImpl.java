@@ -75,11 +75,17 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
-    public Page<LeaveRequestDTO> getLeavesByEmployee(String username, Pageable pageable) {
+    public Page<LeaveRequestDTO> getLeavesByEmployee(String username, Pageable pageable,String search) {
         Employee employee = employeeRepository.findByUserUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found for username: " + username));
-        return leaveRequestRepository.findByEmployee(employee, pageable)
-                .map(LeaveRequestMapper::toDTO);
+        Page<LeaveRequest> leaves;
+        if (search != null && !search.trim().isEmpty()) {
+            leaves = leaveRequestRepository.searchByEmployeeAndKeyword(employee.getId(), search.toLowerCase(), pageable);
+        } else {
+            leaves = leaveRequestRepository.findByEmployee(employee, pageable);
+        }
+
+        return leaves.map(LeaveRequestMapper::toDTO);
     }
 
     @Override
@@ -124,9 +130,9 @@ public class LeaveServiceImpl implements LeaveService {
 
         LeaveStatsDTO stats = new LeaveStatsDTO();
         stats.setTotal(leaveRequestRepository.countByEmployee(employee));
-        stats.setApproved(leaveRequestRepository.countByEmployeeAndStatus(employee, "APPROVED"));
-        stats.setPending(leaveRequestRepository.countByEmployeeAndStatus(employee, "PENDING"));
-        stats.setRejected(leaveRequestRepository.countByEmployeeAndStatus(employee, "REJECTED"));
+        stats.setApproved(leaveRequestRepository.countByEmployeeAndStatus(employee, LeaveStatus.APPROVED));
+        stats.setPending(leaveRequestRepository.countByEmployeeAndStatus(employee, LeaveStatus.PENDING));
+        stats.setRejected(leaveRequestRepository.countByEmployeeAndStatus(employee, LeaveStatus.REJECTED));
         return stats;
     }
 

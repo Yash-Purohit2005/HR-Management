@@ -42,7 +42,7 @@ public class AuthController {
 
         jwtService.setTokenInCookie(response, authResponse.getToken());
 
-        // Step 3: Return response with token and role
+        // Step 3: Return response with token and role and username
         return ResponseEntity.ok(authResponse);
     }
 

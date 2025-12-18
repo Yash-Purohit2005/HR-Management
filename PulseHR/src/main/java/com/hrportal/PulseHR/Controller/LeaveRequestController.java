@@ -50,14 +50,15 @@ public class LeaveRequestController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "appliedOn") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir) {
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String search) {
 
         String direction = sortDir.trim().toLowerCase();
         if (!direction.equals("asc") && !direction.equals("desc")) {
             direction = "desc"; // fallback to default
         }
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
-        return ResponseEntity.ok(leaveService.getLeavesByEmployee(auth.getName(), pageable));
+        return ResponseEntity.ok(leaveService.getLeavesByEmployee(auth.getName(), pageable,search));
     }
 
     @GetMapping("/all")

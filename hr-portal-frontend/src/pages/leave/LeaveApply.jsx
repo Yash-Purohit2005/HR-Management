@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ToastContainer,toast } from "react-toastify";
 import axios from "axios";
 
 function LeaveApply() {
@@ -9,9 +10,9 @@ function LeaveApply() {
     reason: "",
   });
 
-  const [message, setMessage] = useState("");
+  
   const [loading, setLoading] = useState(false);
-  const [buttonText,setButtonText] = useState("Apply Leave");
+  const [buttonText, setButtonText] = useState("Apply Leave");
   const leaveTypes = [
     "SICK",
     "CASUAL",
@@ -31,18 +32,18 @@ function LeaveApply() {
 
     // Basic frontend validation
     if (!leaveData.leaveType || !leaveData.startDate || !leaveData.endDate || !leaveData.reason) {
-      setMessage("Please fill all fields before submitting.");
+      alert("Please fill all fields before submitting.");
       return;
     }
 
     if (leaveData.reason.length < 5 || leaveData.reason.length > 255) {
-      setMessage("Reason must be between 5 and 255 characters.");
+      alert("Reason must be between 5 and 255 characters.");
       return;
     }
 
     try {
       setLoading(true);
-      setMessage("");
+      // setMessage("");
       setButtonText("Submitting....");
       // Ensure dates are in yyyy-MM-dd format
       const formatDate = (dateStr) => {
@@ -64,7 +65,8 @@ function LeaveApply() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setMessage("Leave applied successfully!");
+      // setMessage("Leave applied successfully!");
+      toast.success("Leave applied successfully ");
       setLeaveData({ leaveType: "", startDate: "", endDate: "", reason: "" });
       setButtonText("Submitted");
       setTimeout(() => setButtonText("Apply Leave"), 2000);
@@ -74,84 +76,95 @@ function LeaveApply() {
       if (error.response?.data?.errors) {
         // Combine all error messages into one string
         const errors = Object.values(error.response.data.errors).join(" ");
-        setMessage(errors);
+        alert(errors);
       } else {
         // Fallback to generic message or backend message
-        setMessage(error.response?.data?.message || "Error applying for leave.");
+        alert(error.response?.data?.message || "Error applying for leave.");
       }
 
       setButtonText("Apply Leave");
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
 
 
   return (
-    <div className="max-w-xl mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-semibold mb-4 text-blue-900">Apply for Leave</h2>
+    <div>
+    <ToastContainer position="top-right" autoClose={3000}  />
+    <div className="max-w-xl mx-auto mt-2 bg-white shadow-lg rounded-2xl p-4 border border-gray-100">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b pb-3 flex items-center gap-2">
+        <i className="fa-solid fa-plane-departure text-blue-700"></i>
+        Apply for Leave
+      </h2>
 
-      {message && (
-        <div
-          className={`p-2 mb-4 rounded text-sm ${message.includes("success")
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-            }`}
-        >
-          {message}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Leave Type */}
         <div>
-          <label className="block text-gray-700 mb-1">Leave Type</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Leave Type <span className="text-red-500">*</span>
+          </label>
           <select
             name="leaveType"
             value={leaveData.leaveType}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-150"
           >
             <option value="">-- Select Leave Type --</option>
             {leaveTypes.map((type) => (
-              <option key={type} value={type}>{type}</option>
+              <option key={type} value={type}>
+                {type}
+              </option>
             ))}
           </select>
         </div>
 
         {/* Start Date */}
-        <div>
-          <label className="block text-gray-700 mb-1">Start Date</label>
-          <input
-            type="date"
-            name="startDate"
-            value={leaveData.startDate}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Start Date <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="date"
+              name="startDate"
+              value={leaveData.startDate}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-150"
+            />
+          </div>
 
-        {/* End Date */}
-        <div>
-          <label className="block text-gray-700 mb-1">End Date</label>
-          <input
-            type="date"
-            name="endDate"
-            value={leaveData.endDate}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
+          {/* End Date */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              End Date <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="date"
+              name="endDate"
+              value={leaveData.endDate}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-150"
+            />
+          </div>
         </div>
 
         {/* Reason */}
         <div>
-          <label className="block text-gray-700 mb-1">Reason</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Reason <span className="text-red-500">*</span>
+          </label>
           <textarea
             name="reason"
             value={leaveData.reason}
             onChange={handleChange}
-            className="w-full p-2 border rounded resize-none"
-            rows={3}
+            rows={4}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-150"
             placeholder="Enter reason for leave..."
           ></textarea>
         </div>
@@ -160,12 +173,21 @@ function LeaveApply() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800 disabled:opacity-50"
+          className="w-full bg-blue-700 text-white py-3 rounded-lg font-medium hover:bg-blue-800 transition disabled:opacity-50 shadow-md"
         >
-          {buttonText}
+          {loading ? (
+            <span className="flex justify-center items-center gap-2">
+              <i className="fa-solid fa-spinner fa-spin"></i> Submitting...
+            </span>
+          ) : (
+            <span className="flex justify-center items-center gap-2">
+              <i className="fa-solid fa-paper-plane"></i> {buttonText}
+            </span>
+          )}
         </button>
       </form>
     </div>
+  </div>
   );
 }
 

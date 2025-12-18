@@ -1,15 +1,13 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
-  FiUser,
-  FiEdit3,
-  FiKey,
+ 
   FiHome,
   FiCalendar,
   FiLogOut,
 } from "react-icons/fi";
 
-const Sidebar = ({ logout }) => {
+const AdminSidebar = ({ logout }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,32 +20,9 @@ const Sidebar = ({ logout }) => {
       <div>
         
         <nav className="flex flex-col mt-2 text-[15px] font-medium">
-          <Link
-            to="/user/profile"
-            className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
-          >
-            <FiUser className="mr-3 text-blue-700 text-lg" />
-            My Profile
-          </Link>
 
           <Link
-            to="/user/update-profile"
-            className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
-          >
-            <FiEdit3 className="mr-3 text-blue-700 text-lg" />
-            Update Profile
-          </Link>
-
-          <Link
-            to="/user/change-password"
-            className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
-          >
-            <FiKey className="mr-3 text-blue-700 text-lg" />
-            Change Password
-          </Link>
-
-          <Link
-            to="/user/leaves"
+            to="/admin/admin-dashboard"
             className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
           >
             <FiHome className="mr-3 text-blue-700 text-lg" />
@@ -55,11 +30,11 @@ const Sidebar = ({ logout }) => {
           </Link>
 
           <Link
-            to="/user/leave-apply"
+            to="/admin/admin-profile"
             className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
           >
             <FiCalendar className="mr-3 text-blue-700 text-lg" />
-            Apply Leave
+           Profile
           </Link>
         </nav>
       </div>
@@ -81,4 +56,4 @@ const Sidebar = ({ logout }) => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;
