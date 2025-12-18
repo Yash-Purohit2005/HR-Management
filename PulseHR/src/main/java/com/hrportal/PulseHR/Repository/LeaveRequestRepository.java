@@ -2,6 +2,7 @@ package com.hrportal.PulseHR.Repository;
 
 import com.hrportal.PulseHR.Entity.Employee;
 import com.hrportal.PulseHR.Entity.LeaveRequest;
+import com.hrportal.PulseHR.Enums.LeaveStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,12 +29,19 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
             @Param("endDate") LocalDate endDate
     );
 
+    @Query("SELECT lr FROM LeaveRequest lr WHERE lr.employee.id = :employeeId " +
+            "AND (LOWER(lr.reason) LIKE %:keyword% OR LOWER(lr.leaveType) LIKE %:keyword%)")
+    Page<LeaveRequest> searchByEmployeeAndKeyword(@Param("employeeId") Long employeeId,
+                                                  @Param("keyword") String keyword,
+                                                  Pageable pageable);
+
+
 
     // Count total by status (for admin)
     long countByStatus(String status);
 
     // For specific user
-    long countByEmployeeAndStatus(Employee employee, String status);
+    long countByEmployeeAndStatus(Employee employee, LeaveStatus status);
 
     long countByEmployee(Employee employee);
 

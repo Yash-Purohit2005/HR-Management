@@ -63,10 +63,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token = jwtService.generateToken(request.getEmail());
-        return new AuthResponseDTO(
-                token,
-                user.getRoles().stream().findFirst()
-                        .orElseThrow(() -> new RuntimeException("User has no role assigned"))
-        );
+        String role = user.getRoles().stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User has no role assigned"));
+
+        return new AuthResponseDTO(token, role, user.getUsername());
     }
 }

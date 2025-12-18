@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PulseHrApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(PulseHrApplication.class, args);
 	}
 

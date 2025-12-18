@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api"; // Axios instance
 
@@ -16,7 +16,7 @@ function Login() {
 
     try {
       // Call backend login endpoint
-     const response = await API.post("/auth/login", { email, password }, { withCredentials: true });
+      const response = await API.post("/auth/login", { email, password }, { withCredentials: true });
 
       // Get JWT from response
       const token = response.data.token;
@@ -27,17 +27,26 @@ function Login() {
       // Optionally store role for role-based UI
       localStorage.setItem("role", response.data.role);
 
+      //Optionally store username for ui 
+      localStorage.setItem("username", response.data.username);
+      console.log("LOGIN RESPONSE:", response.data);
+
       // Redirect to Dashboard
-      navigate("/dashboard");
+      if (response.data.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/user");
+      }
+
     } catch (error) {
       console.error(error);
       const message =
-      error.response?.data?.message ||
-      (error.response?.status === 500 && error.response?.data?.message?.includes("inactive")
-        ? "Account is inactive. Contact admin."
-        : "Login failed");
+        error.response?.data?.message ||
+        (error.response?.status === 500 && error.response?.data?.message?.includes("inactive")
+          ? "Account is inactive. Contact admin."
+          : "Login failed");
 
-    alert(message);
+      alert(message);
     }
   };
 

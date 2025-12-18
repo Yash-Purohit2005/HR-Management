@@ -39,7 +39,7 @@ public class NotificationServiceImpl implements NotificationService {
             default -> List.of(AudienceType.ALL);
         };
 
-        return notificationRepository.findByAudienceIn(audiences).stream()
+        return notificationRepository.findTop10ByAudienceInOrderByCreatedAtDesc(audiences).stream()
                 .map(n -> {
                     NotificationDTO dto = new NotificationDTO();
                     dto.setTitle(n.getTitle());

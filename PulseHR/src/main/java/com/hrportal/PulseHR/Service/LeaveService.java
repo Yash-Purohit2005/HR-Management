@@ -11,7 +11,7 @@ public interface LeaveService {
 
     LeaveRequestDTO applyLeave(LeaveRequestDTO dto, String username);
     Page<LeaveRequestDTO> getAllLeaves(Pageable pageable); // pagination + sorting
-    Page<LeaveRequestDTO> getLeavesByEmployee(String username, Pageable pageable);
+    Page<LeaveRequestDTO> getLeavesByEmployee(String username, Pageable pageable,String search);
     LeaveRequestDTO updateLeaveStatus(Long leaveId, LeaveStatus status);
     void cancelLeave(Long leaveId, String username);
     LeaveStatsDTO getStatsForAdmin();

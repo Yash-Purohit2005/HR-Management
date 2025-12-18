@@ -10,13 +10,24 @@ import lombok.NoArgsConstructor;
 public class AuthResponseDTO {
     private String token;
     private String role;
+    private String username;
 
     public AuthResponseDTO() {}
 
-    public AuthResponseDTO(String token, String role) {
+    public AuthResponseDTO(String token, String role,String username) {
         this.token = token;
         this.role = role;
+        this.username = username;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 
     public String getToken() {
         return token;
