@@ -9,6 +9,15 @@ public class ActivityLogDTO {
     private String details;
     private LocalDateTime timestamp;
 
+    public ActivityLogDTO() {}
+
+    public ActivityLogDTO(String action, String performedBy, String details, LocalDateTime timestamp) {
+        this.action = action;
+        this.performedBy = performedBy;
+        this.details = details;
+        this.timestamp = timestamp;
+    }
+
     public String getAction() {
         return action;
     }

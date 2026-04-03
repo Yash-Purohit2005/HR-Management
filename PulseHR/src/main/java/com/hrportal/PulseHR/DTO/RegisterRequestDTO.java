@@ -20,7 +20,39 @@ public class RegisterRequestDTO {
     @NotBlank(message = "Role is required")
     private String role;
 
+    private String phoneNo;
+
+    private String department;
+
+    private String previousCompany;
+
     // --- Getters and Setters ---
+
+    public String getPreviousCompany() {
+        return previousCompany;
+    }
+
+    public void setPreviousCompany(String previousCompany) {
+        this.previousCompany = previousCompany;
+    }
+
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
 
     public String getUsername() {
         return username;

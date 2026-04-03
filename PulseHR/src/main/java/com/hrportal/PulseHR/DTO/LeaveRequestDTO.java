@@ -10,6 +10,8 @@ import java.time.LocalDate;
 
 public class LeaveRequestDTO {
 
+    private String employeeName;
+
     @NotNull(message = "Start date is required")
     @FutureOrPresent(message = "Start date must be today or in the future")
     private LocalDate startDate;
@@ -28,6 +30,14 @@ public class LeaveRequestDTO {
     private LeaveStatus status;  // Optional for request, returned in response
     private LocalDate appliedOn; // Only returned
     private Long leaveId;
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
 
     public long getLeaveId() {
         return leaveId;

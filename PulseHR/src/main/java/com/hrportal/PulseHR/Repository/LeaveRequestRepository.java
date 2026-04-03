@@ -38,7 +38,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
 
 
     // Count total by status (for admin)
-    long countByStatus(String status);
+    long countByStatus(LeaveStatus status);
 
     // For specific user
     long countByEmployeeAndStatus(Employee employee, LeaveStatus status);

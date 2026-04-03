@@ -4,6 +4,8 @@ import com.hrportal.PulseHR.DTO.ActivityLogDTO;
 import com.hrportal.PulseHR.Entity.ActivityLog;
 import com.hrportal.PulseHR.Repository.ActivityLogRepository;
 import com.hrportal.PulseHR.Service.ActivityLogService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,15 +32,13 @@ public class ActivityLogServiceImpl implements ActivityLogService {
         activityLogRepository.save(log); // 👈 Required to store in DB
     }
 
-    @Override
-    public List<ActivityLogDTO> getRecentActivityLogs(int limit) {
-        return activityLogRepository.findRecentLogs(limit).stream().map(log -> {
-            ActivityLogDTO dto = new ActivityLogDTO();
-            dto.setAction(log.getAction());
-            dto.setPerformedBy(log.getPerformedBy());
-            dto.setDetails(log.getDetails());
-            dto.setTimestamp(log.getTimestamp());
-            return dto;
-        }).collect(Collectors.toList());
+    public Page<ActivityLogDTO> getRecentActivitiesLogs(int page, int size) {
+        return activityLogRepository.findRecentLogs(PageRequest.of(page, size))
+                .map(log -> new ActivityLogDTO(
+                log.getAction(),
+                log.getPerformedBy(),
+                log.getDetails(),
+                log.getTimestamp()
+        ));
     }
 }

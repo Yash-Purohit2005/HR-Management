@@ -4,6 +4,8 @@ import com.hrportal.PulseHR.DTO.EmployeeDTO;
 import com.hrportal.PulseHR.DTO.EmployeeStatsDTO;
 import com.hrportal.PulseHR.Entity.Employee;
 import com.hrportal.PulseHR.Entity.User;
+import com.hrportal.PulseHR.Exception.EmailAlreadyExistsException;
+import com.hrportal.PulseHR.Exception.EmailDeliveryException;
 import com.hrportal.PulseHR.Exception.ResourceNotFoundException;
 import com.hrportal.PulseHR.Repository.EmployeeRepository;
 import com.hrportal.PulseHR.Repository.UserRepository;
@@ -15,11 +17,10 @@ import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,34 +31,102 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ActivityLogService activityLogService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository,ActivityLogService activityLogService,UserRepository userRepository,PasswordEncoder passwordEncoder){
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository,ActivityLogService activityLogService,UserRepository userRepository,PasswordEncoder passwordEncoder,EmailService emailService){
         this.employeeRepository=employeeRepository;
         this.activityLogService=activityLogService;
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
+        this.emailService=emailService;
     }
 
-    @Override
-    public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
-        // 1. Create User
-        User user = new User();
-        user.setUsername(employeeDTO.getEmail());
-        user.setEmail(employeeDTO.getEmail());
-        user.setPassword(passwordEncoder.encode("defaultPassword@123")); // ensure password encoder is injected
-        user.setActive(true);
-        user.setRoles(Set.of("USER")); // always default for new employees
+  //  @Override
 
-        User savedUser = userRepository.save(user);
+   // public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
 
-        // 2. Create Employee linked to User
-        Employee employee = EmployeeMapper.toEntity(employeeDTO);
-        employee.setUser(savedUser);
+//// 1. Create User
+//
+//        User user = new User();
+//
+//        user.setUsername(employeeDTO.getEmail());
+//
+//        user.setEmail(employeeDTO.getEmail());
+//
+//        user.setPassword(passwordEncoder.encode("defaultPassword@123")); // ensure password encoder is injected
+//
+//        user.setActive(true);
+//
+//        user.setRoles(Set.of("USER")); // always default for new employees
+//
+//
+//
+//        User savedUser = userRepository.save(user);
+//
+//
+//
+//// 2. Create Employee linked to User
+//
+//        Employee employee = EmployeeMapper.toEntity(employeeDTO);
+//
+//        employee.setUser(savedUser);
+//
+//
+//
+//        Employee savedEmployee = employeeRepository.save(employee);
+//
+//
+//
+//        return EmployeeMapper.toDTO(savedEmployee);
+//
+//    }
+ // ambk djcs qobb zurl
+@Override
+@Transactional
+public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
 
-        Employee savedEmployee = employeeRepository.save(employee);
-
-        return EmployeeMapper.toDTO(savedEmployee);
+    if (userRepository.existsByEmail(employeeDTO.getEmail())) {
+        throw new EmailAlreadyExistsException("An employee with email " + employeeDTO.getEmail() + " already exists.");
     }
+    // 1. Create User
+    User user = new User();
+    user.setUsername(employeeDTO.getEmail());
+    user.setEmail(employeeDTO.getEmail());
+    user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+    user.setActive(true);
+    user.setRoles(Set.of("USER"));
+    user.setPasswordSet(false);
+
+    // 2. Setup Token Logic
+    String setupToken = UUID.randomUUID().toString();
+    user.setSetupToken(setupToken);
+    user.setSetupTokenExpiry(LocalDateTime.now().plusHours(24));// Fixed Setter
+
+
+    User savedUser = userRepository.save(user);
+
+    // 3. Create Employee
+    Employee employee = EmployeeMapper.toEntity(employeeDTO);
+    employee.setUser(savedUser);
+    Employee savedEmployee = employeeRepository.save(employee);
+
+    // 4. Send Email
+    try {
+        emailService.sendWelcomeEmail(
+                savedUser.getEmail(),
+                savedEmployee.getFirstName(),
+                setupToken
+        );
+    } catch (Exception e) {
+
+        // This triggers @Transactional rollback and the GlobalExceptionHandler
+        throw new EmailDeliveryException(
+                "Employee account created, but the invitation email failed to send. " +
+                        "Please check SMTP settings.", e);
+    }
+
+    return EmployeeMapper.toDTO(savedEmployee);
+}
 
     @Override
     public Page<EmployeeDTO> getAllEmployees(Pageable pageable) {
@@ -104,9 +173,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         stats.setTotalEmployees(employeeRepository.countTotalEmployees());
         stats.setActiveEmployees(employeeRepository.countActiveEmployees());
         stats.setInactiveEmployees(employeeRepository.countInactiveEmployees());
-
+        stats.setTotalDepartment(employeeRepository.countTotalDepartments());
         // Optional: count by department
-        List<Object[]> deptCounts = employeeRepository.countByDepartment();
+        List<Object[]> deptCounts = employeeRepository.countActiveByDepartment();
+        System.out.println(deptCounts.size());
         Map<String, Long> deptMap = deptCounts.stream()
                 .collect(Collectors.toMap(
                         obj -> (String) obj[0],
@@ -149,7 +219,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         employeeRepository.save(employee);
-        activityLogService.logActivity("Deactivate Employee", "ADMIN", "Employee ID: " + id);
+
     }
 
     @Override
@@ -167,7 +237,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         employeeRepository.save(employee);
 
-        activityLogService.logActivity("Reactivate Employee", "ADMIN", "Employee ID: " + id);
+
     }
 
 
@@ -179,10 +249,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+    public EmployeeDTO updateEmployee( EmployeeDTO employeeDTO) {
         // Fetch the existing employee from DB
-        Employee existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+        Employee existingEmployee = employeeRepository.findById(employeeDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + employeeDTO.getId()));
 
         // Update the fields
         existingEmployee.setFirstName(employeeDTO.getFirstName());

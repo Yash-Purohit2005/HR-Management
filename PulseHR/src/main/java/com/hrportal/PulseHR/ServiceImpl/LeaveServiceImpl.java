@@ -117,9 +117,9 @@ public class LeaveServiceImpl implements LeaveService {
     public LeaveStatsDTO getStatsForAdmin() {
         LeaveStatsDTO stats = new LeaveStatsDTO();
         stats.setTotal(leaveRequestRepository.count());
-        stats.setApproved(leaveRequestRepository.countByStatus("APPROVED"));
-        stats.setPending(leaveRequestRepository.countByStatus("PENDING"));
-        stats.setRejected(leaveRequestRepository.countByStatus("REJECTED"));
+        stats.setApproved(leaveRequestRepository.countByStatus(LeaveStatus.APPROVED));
+        stats.setPending(leaveRequestRepository.countByStatus(LeaveStatus.PENDING));
+        stats.setRejected(leaveRequestRepository.countByStatus(LeaveStatus.REJECTED));
         return stats;
     }
 

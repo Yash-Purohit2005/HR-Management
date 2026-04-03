@@ -19,7 +19,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e FROM Employee e WHERE " +
             "LOWER(e.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(e.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(e.department) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Employee> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT e FROM Employee e " +
@@ -42,8 +43,16 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT COUNT(e) FROM Employee e WHERE e.active = false")
     long countInactiveEmployees();
 
-    @Query("SELECT e.department, COUNT(e) FROM Employee e GROUP BY e.department")
-    List<Object[]> countByDepartment();
+    @Query("""
+  SELECT COUNT(DISTINCT e.department)
+  FROM Employee e
+  WHERE e.department IS NOT NULL
+""")
+    long countTotalDepartments();
+
+
+    @Query(" SELECT e.department, COUNT(e) FROM Employee e WHERE e.active = true GROUP BY e.department")
+    List<Object[]> countActiveByDepartment();
 
     List<Employee> findByActive(boolean active);
 

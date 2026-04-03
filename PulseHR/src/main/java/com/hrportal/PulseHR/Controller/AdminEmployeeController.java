@@ -43,21 +43,32 @@ public class AdminEmployeeController {
         activityLogService.logActivity(
                 "CREATE",
                 "Admin",
-                "Created employee: " + createdEmployee.getFirstName() + " (ID: " + createdEmployee.getId() + ")"
+                "Created employee: " + createdEmployee.getFirstName() + " " + createdEmployee.getLastName() + " " + " (ID: " + createdEmployee.getId() + ")"
         );
         return createdEmployee;
     }
 
     @PutMapping("/update/{id}")
-    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
-        EmployeeDTO updatedEmployee = employeeService.updateEmployee(id,employeeDTO);
+    public ResponseEntity<EmployeeDTO> updateEmployee(
+            @PathVariable Long id,
+            @RequestBody EmployeeDTO employeeDTO) {
+        // Enforce ID from path
+        employeeDTO.setId(id);
+
+        EmployeeDTO updatedEmployee = employeeService.updateEmployee(employeeDTO);
+
         activityLogService.logActivity(
                 "UPDATE",
                 "Admin",
-                "Updated employee: " + updatedEmployee.getFirstName() + " (ID: " + updatedEmployee.getId() + ")"
+                "Updated employee: " +
+                        updatedEmployee.getFirstName() + " " +
+                        updatedEmployee.getLastName() +
+                        " (ID: " + updatedEmployee.getId() + ")"
         );
-        return updatedEmployee;
+
+        return ResponseEntity.ok(updatedEmployee);
     }
+
 
     @DeleteMapping("/delete/{id}")
     public void deleteEmployee(@PathVariable Long id) {
@@ -108,8 +119,10 @@ public class AdminEmployeeController {
     }
 
     @GetMapping("/logs/recent")
-    public List<ActivityLogDTO> getRecentActivityLogs(@RequestParam(defaultValue = "10") int limit) {
-        return activityLogService.getRecentActivityLogs(limit);
+    public Page<ActivityLogDTO> getRecentActivities(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return activityLogService.getRecentActivitiesLogs(page, size);
     }
 
     @GetMapping("/sort")
@@ -139,6 +152,7 @@ public class AdminEmployeeController {
                 "Admin", // Or fetch dynamically from the authenticated user
                 "Deactivate employee with ID: " + id
         );
+        System.out.println("Deactivate API called for ID: " + id);
         return ResponseEntity.ok("Employee deactivated successfully.");
     }
 
@@ -153,27 +167,26 @@ public class AdminEmployeeController {
         return ResponseEntity.ok("Employee reactivated successfully.");
     }
 
-    @PutMapping("/admin/update-profile")
-    public ResponseEntity<UserDTO> updateAdminProfile(@RequestBody UpdateAdminProfileRequestDTO request,
+    @PatchMapping("/admin/update-profile")
+    public ResponseEntity<AdminProfileUpdateResponseDTO> updateAdminProfile(@RequestBody UpdateAdminProfileRequestDTO request,
                                                       Principal principal) {
-        String username = principal.getName(); // Fetch currently logged-in admin
-        User updatedUser = userService.updateAdminProfile(username, request);
-        UserDTO userDto = UserMapper.userDTO(updatedUser);
+        String email = principal.getName(); // Fetch currently logged-in admin
+        AdminProfileUpdateResponseDTO adminProfileUpdateResponseDTO = userService.updateAdminProfile(email, request);
         activityLogService.logActivity(
                 "UPDATE",
                 "Admin", // Or fetch dynamically from the authenticated user
                 "Updated profile successfully"
         );
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(adminProfileUpdateResponseDTO);
     }
 
     // In AdminController.java
 
-    @GetMapping("/admin/profile")
-    public ResponseEntity<UserDTO> viewAdminProfile(Authentication authentication) {
-        String username = authentication.getName();
-        UserDTO userDTO = userService.getUserProfile(username);
-        return ResponseEntity.ok(userDTO);
+    @GetMapping("/admin-profile")
+    public ResponseEntity<AdminProfileResponseDTO> viewAdminProfile(Authentication authentication) {
+        String email = authentication.getName();
+       AdminProfileResponseDTO adminProfileResponseDTO= userService.getUserProfile(email);
+        return ResponseEntity.ok(adminProfileResponseDTO);
     }
 
 

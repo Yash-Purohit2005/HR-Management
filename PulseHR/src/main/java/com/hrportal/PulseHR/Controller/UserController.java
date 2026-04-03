@@ -14,7 +14,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user")
-@PreAuthorize("hasAnyRole('USER')")
+//@PreAuthorize("hasAnyRole('USER','ADMIN')")
 //@CrossOrigin(origins = {"http://localhost:5173","http://localhost:5174"}, allowCredentials = "true")
 public class UserController {
 
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    @PreAuthorize("hasRole('USER')")
+   @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EmployeeDTO> viewEmployeeProfile(Authentication authentication) {
         String username = authentication.getName();
         EmployeeDTO employeeDTO = employeeService.getEmployeeProfileByUsername(username);
@@ -45,8 +45,8 @@ public class UserController {
     @PutMapping("/change-password")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequestDTO request, Authentication authentication) {
-        String username = authentication.getName();
-        userService.changePassword(username, request);
+        String email = authentication.getName();
+        userService.changePassword(email, request);
         return ResponseEntity.ok("Password changed successfully");
     }
 

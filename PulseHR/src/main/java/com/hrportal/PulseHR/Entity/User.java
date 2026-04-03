@@ -23,6 +23,10 @@ public class User {
 
     private boolean isActive = true;
 
+    private String setupToken;
+    private LocalDateTime setupTokenExpiry;
+    private boolean isPasswordSet = false;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -107,6 +111,29 @@ public class User {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+    public String getSetupToken() {
+        return setupToken;
+    }
+
+    public void setSetupToken(String setupToken) {
+        this.setupToken = setupToken;
+    }
+
+    public LocalDateTime getSetupTokenExpiry() {
+        return setupTokenExpiry;
+    }
+
+    public void setSetupTokenExpiry(LocalDateTime setupTokenExpiry) {
+        this.setupTokenExpiry = setupTokenExpiry;
+    }
+
+    public boolean isPasswordSet() {
+        return isPasswordSet;
+    }
+
+    public void setPasswordSet(boolean passwordSet) {
+        isPasswordSet = passwordSet;
     }
 }
 

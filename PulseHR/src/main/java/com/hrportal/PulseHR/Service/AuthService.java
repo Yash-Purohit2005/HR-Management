@@ -1,12 +1,12 @@
 package com.hrportal.PulseHR.Service;
 
-import com.hrportal.PulseHR.DTO.AuthResponseDTO;
-import com.hrportal.PulseHR.DTO.LoginRequestDTO;
-import com.hrportal.PulseHR.DTO.RegisterRequestDTO;
-import com.hrportal.PulseHR.DTO.UserDTO;
+import com.hrportal.PulseHR.DTO.*;
 
 public interface AuthService {
 
-    UserDTO register(RegisterRequestDTO request);
+    AdminProfileResponseDTO register(RegisterRequestDTO request);
     AuthResponseDTO login(LoginRequestDTO request);
+    void completeOnboarding(SetUpPasswordRequestDTO request);
+    void processForgotPassword(String email);
+    void resetPassword(String token, String newPassword);
 }

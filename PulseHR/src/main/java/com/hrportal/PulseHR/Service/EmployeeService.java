@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EmployeeService {
     EmployeeDTO createEmployee(EmployeeDTO employeeDTO);
-    EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO);
+    EmployeeDTO updateEmployee( EmployeeDTO employeeDTO);
     void deleteEmployee(Long id);
     EmployeeDTO getEmployeeById(Long id);
     Page<EmployeeDTO> getAllEmployees(Pageable pageable);

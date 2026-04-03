@@ -1,5 +1,7 @@
 package com.hrportal.PulseHR.DTO;
 
+import com.hrportal.PulseHR.Repository.EmployeeRepository;
+
 import java.util.Map;
 
 public class EmployeeStatsDTO {
@@ -7,6 +9,7 @@ public class EmployeeStatsDTO {
     private long totalEmployees;
     private long activeEmployees;
     private long inactiveEmployees;
+    private long totalDepartment;
     private Map<String, Long> departmentCounts;
 
     public long getTotalEmployees() {
@@ -32,6 +35,10 @@ public class EmployeeStatsDTO {
     public void setInactiveEmployees(long inactiveEmployees) {
         this.inactiveEmployees = inactiveEmployees;
     }
+
+    public void setTotalDepartment(long totalDepartment) {this.totalDepartment=totalDepartment;}
+
+    public long getTotalDepartment() {return totalDepartment;}
 
     public Map<String, Long> getDepartmentCounts() {
         return departmentCounts;

@@ -10,7 +10,7 @@ public class UserDTO {
     private boolean active;
     private Set<String> roles;
 
-    // --- Getters and Setters ---
+
 
     public Long getId() {
         return id;

@@ -20,6 +20,12 @@ public class LeaveRequestMapper {
         dto.setStatus(leaveRequest.getStatus());
         dto.setAppliedOn(leaveRequest.getAppliedOn());
         dto.setLeaveId(leaveRequest.getId());
+
+        if (leaveRequest.getEmployee() != null) {
+            dto.setEmployeeName(
+                    leaveRequest.getEmployee().getFirstName() + " " + leaveRequest.getEmployee().getLastName()
+            );
+        }
         return dto;
     }
 
