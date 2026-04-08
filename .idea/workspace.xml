@@ -5,113 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1d323f54-8371-4421-992d-68009eb4698d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/AdminEmployees.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/AdminHome.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/AllLeavesTable.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/ChangePassword.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/CreateEmployees.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/DepartmentBarChart.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/DepartmentStats.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/EditEmployee.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/EmployeeLeaveStats.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/EmployeeTable.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/LeaveStatsCards.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/LeaveTypeBreakdown.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/MonthlyLeaveTrend.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/Pagination.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/QuickActions.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/RecentActivities.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/Statscard.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/UpdateEmployee.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/hooks/useEmployee.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/hooks/useEmployeeStats.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/hooks/useRecentActivities.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminDashboard.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminProfile.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/CreateNotification.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/LeaveManagement.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/ForgotPassword.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/Login.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/ResetPassword.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/SetUpPassword.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/adminService.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/changePassword.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/createEmployeeAPI.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/editProfile.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/getEmployee.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/notification.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/recentlogs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/stats.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/useAllLeaves.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/useEmployeeLeaveStats.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/useLeaveStats.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/useLeaveTypeBreakdown.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/admin-services/useMonthlyLeaveTrends.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/auth-services/setUpPasswordAPI.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/notification/notification.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/LeaveApply.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/NotificationBell.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/ChangePassword.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/LeaveRequest.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/Profile.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/UpdateProfile.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PulseHR/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AdminEmployeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AdminEmployeeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/NotificationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/ActivityLogDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/ActivityLogDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/EmployeeStatsDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/EmployeeStatsDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/LeaveRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/LeaveRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/NotificationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/NotificationDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/RegisterRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/RegisterRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/UpdateAdminProfileRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/UpdateAdminProfileRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/ActivityLogRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/ActivityLogRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/EmployeeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/LeaveRequestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/LeaveRequestRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/UserRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/CorsConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/JwtService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/ActivityLogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/ActivityLogService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/EmployeeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/NotificationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ActivityLogServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ActivityLogServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/AuthServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/EmployeeServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/EmployeeServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/LeaveServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/LeaveServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/NotificationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/NotificationServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Utility/LeaveRequestMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Utility/LeaveRequestMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PulseHR/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hr-portal-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hr-portal-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/AdminDashboard.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/AdminHome.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/AdminProfile.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/AdminSidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/AdminSidebar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/components/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/Header.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/components/ProtectedRoute.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/ProtectedRoute.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/components/SearchBar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/SearchBar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/components/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/Sidebar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/components/notification/NotificationBell.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/pages/ChangePassword.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/pages/LeaveRequest.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/pages/Login.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/pages/Profile.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/pages/UpdateProfile.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/pages/UserDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/UserDashboard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/pages/leave/LeaveApply.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/AdminSidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/components/AdminSidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminDashboard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/component/Sidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/UserDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/UserDashboard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hr-portal-frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -150,7 +57,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;Spring Boot.PulseHrApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;frontend/feature&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/one-to-one-chat&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,

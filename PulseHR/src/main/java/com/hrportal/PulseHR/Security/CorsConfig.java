@@ -14,18 +14,25 @@ public class CorsConfig {
 
     @Value("${app.frontend.url}")
     private String frontendURL;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(frontendURL,"http://localhost:5173", "http://localhost:5174","http://192.168.1.5:5173"));
+        configuration.setAllowedOrigins(List.of(frontendURL, "http://localhost:5173", "http://localhost:5174", "http://192.168.1.5:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+
+        // ✅ ADDED: Authorization + WebSocket required headers
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control",
+                "X-Requested-With", "Accept", "Origin",
+                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }

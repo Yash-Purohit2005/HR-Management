@@ -22,9 +22,8 @@ public class SecurityConfig {
     private final LogoutHandler logoutHandler;
 
     @Autowired
-    private  CorsConfig corsConfig;
+    private CorsConfig corsConfig;
 
-    // 🔧 Manually define constructor for dependency injection
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
             UserDetailsService userDetailsService,
@@ -43,9 +42,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
+
+                        // ✅ ADDED: Allow WebSocket handshake endpoints
+                        .requestMatchers("/ws/**").permitAll()
+
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/user/**").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/api/leaves/**").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/leaves/**").hasAnyRole("USER", "ADMIN")
+
+                        // ✅ ADDED: Chat REST endpoints
+                        .requestMatchers("/api/chat/**").hasAnyRole("USER", "ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -57,9 +64,6 @@ public class SecurityConfig {
                         }))
                 .build();
     }
-
-
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
