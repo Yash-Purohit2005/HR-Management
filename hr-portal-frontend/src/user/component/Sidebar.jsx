@@ -7,6 +7,7 @@ import {
   FiHome,
   FiCalendar,
   FiLogOut,
+  FiMessageSquare,
 } from "react-icons/fi";
 
 const Sidebar = ({ logout }) => {
@@ -61,6 +62,15 @@ const Sidebar = ({ logout }) => {
             <FiCalendar className="mr-3 text-blue-700 text-lg" />
             Apply Leave
           </Link>
+
+          <Link
+            to="/user/chat"
+            className={`flex items-center px-4 py-3 hover:bg-blue-100 transition ${isActive("/user/chat") ? "bg-blue-100 border-l-4 border-blue-600" : ""}`}
+          >
+            <FiMessageSquare className="mr-3 text-blue-700 text-lg" />
+            HR Support
+          </Link>
+
         </nav>
       </div>
 

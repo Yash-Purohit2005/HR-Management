@@ -8,6 +8,7 @@ import UpdateProfile from "./UpdateProfile";
 import ChangePassword from "./ChangePassword";
 import LeaveApply from "../component/LeaveApply";
 import Header from "../component/Header";
+import EmployeeChat from "./EmployeeChat";
 import { getUsername,getRole, logout } from "../../services/authService";
 
 function UserDashboard() {
@@ -43,6 +44,7 @@ function UserDashboard() {
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="leaves" element={<LeaveRequests />} />
             <Route path="leave-apply" element={<LeaveApply />} />
+            <Route path="chat" element={<EmployeeChat />} />
           </Routes>
         </main>
       </div>

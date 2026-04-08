@@ -5,6 +5,7 @@ import {
   FiHome,
   FiLogOut,
   FiBell,
+  FiMessageSquare,
 } from "react-icons/fi";
 import { MdBeachAccess } from "react-icons/md";
 
@@ -56,7 +57,14 @@ const AdminSidebar = ({ logout }) => {
             <FiBell className="mr-3 text-blue-700 text-lg" />
            Create Notification
           </Link>
-
+        
+           <Link
+            to="/admin/chat"
+            className={`flex items-center px-4 py-3 hover:bg-blue-100 transition ${isActive("/admin/chat") ? "bg-blue-100 border-l-4 border-blue-600" : ""}`}
+          >
+            <FiMessageSquare className="mr-3 text-blue-700 text-lg" />
+            HR Chat
+          </Link>
 
         </nav>
       </div>

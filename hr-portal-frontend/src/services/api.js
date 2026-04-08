@@ -1,11 +1,11 @@
 import axios from "axios";
 import { getToken } from "./authService";
 
+
 const API = axios.create({
   baseURL: "http://localhost:8080/api",
-  withCredentials: true, // send cookies if you use them
+  withCredentials: true,
 });
-
 // Automatically attach JWT to all requests
 API.interceptors.request.use(
   (config) => {

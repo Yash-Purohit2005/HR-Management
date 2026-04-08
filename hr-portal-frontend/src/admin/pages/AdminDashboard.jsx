@@ -11,7 +11,7 @@ import UpdateEmployee from "../components/UpdateEmployee";
 import ChangePassword from "../components/ChangePassword";
 import EditEmployee from "../components/EditEmployee";
 import CreateNotification from "./CreateNotification";
-
+import AdminChat from "./AdminChat";
 
 export default function AdminDashboard() {
 
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
                         <Route path="edit-profile" element={<UpdateEmployee />} />
                         <Route path="change-password" element={<ChangePassword />} />
                         <Route path="create-notification" element={<CreateNotification/>}/>
-                       
+                        <Route path="chat" element={<AdminChat/>} /> {/* ✅ ADDED */}
                     </Routes>
                 </main>
             </div>
