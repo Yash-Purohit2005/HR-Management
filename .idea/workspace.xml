@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d323f54-8371-4421-992d-68009eb4698d" name="Changes" comment="" />
+    <list default="true" id="1d323f54-8371-4421-992d-68009eb4698d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/ChatMessageDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/DTO/ChatMessageDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Security/JwtService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ChatService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/config/WebSocketAuthInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/config/WebSocketAuthInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminChat.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminChat.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/services/chat/useChat.js" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/chat/useChat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/EmployeeChat.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/EmployeeChat.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +52,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;Spring Boot.PulseHrApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/one-to-one-chat&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,

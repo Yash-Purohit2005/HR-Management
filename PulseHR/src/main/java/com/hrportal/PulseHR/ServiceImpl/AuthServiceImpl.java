@@ -78,10 +78,12 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
-        String token = jwtService.generateToken(request.getEmail());
         String role = user.getRoles().stream()
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("User has no role assigned"));
+
+        String token = jwtService.generateToken(request.getEmail(), role);
+
 
         return new AuthResponseDTO(token, role, user.getUsername());
     }

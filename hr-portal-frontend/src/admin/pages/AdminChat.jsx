@@ -46,38 +46,30 @@ const AdminChat = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [input, setInput] = useState("");
-  const [unreadMap, setUnreadMap] = useState({});
   const bottomRef = useRef(null);
-  const currentEmailRef = useRef(null);
 
-  const { messages, send, loading, currentEmail } = useChat(selectedEmployee);
+  // ✅ unreadMap now comes from useChat — single source of truth
+  const { messages, send, loading, currentEmail, unreadMap, setInitialUnread } =
+    useChat(selectedEmployee);
 
-  // ─── Store currentEmail in ref for use in effects ───────────────────────────
-  useEffect(() => {
-    if (currentEmail) currentEmailRef.current = currentEmail;
-  }, [currentEmail]);
-
-  // ─── Fetch employee list ─────────────────────────────────────────────────────
+  // ─── Fetch assigned employee list ─────────────────────────────────────────
   useEffect(() => {
     if (!currentEmail) return;
-    API.get("/chat/employees", { params: { adminEmail: currentEmail } })
+    API.get("/chat/my-users")
       .then((res) => setEmployeeList(res.data))
       .catch((err) => console.error("Failed to fetch employee list:", err));
   }, [currentEmail]);
 
-  // ─── Fetch unread counts per sender ─────────────────────────────────────────
-  // Backend /api/chat/unread now returns Map<String, Long> grouped by senderEmail
+  // ─── Seed unread counts from API on mount ─────────────────────────────────
+  // This handles counts for messages received before the admin opened the app
   useEffect(() => {
-    if (!currentEmail || employeeList.length === 0) return;
-    API.get("/chat/unread", { params: { receiverEmail: currentEmail } })
-      .then((res) => {
-        // res.data is { "employee@example.com": 3, "other@example.com": 1 }
-        setUnreadMap(res.data);
-      })
-      .catch(() => {});
-  }, [employeeList, currentEmail]);
+    if (!currentEmail) return;
+    API.get("/chat/unread")
+      .then((res) => setInitialUnread(res.data))
+      .catch((err) => console.error("Unread fetch failed", err));
+  }, [currentEmail]);
 
-  // ─── Auto scroll ─────────────────────────────────────────────────────────────
+  // ─── Auto scroll ──────────────────────────────────────────────────────────
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -85,8 +77,7 @@ const AdminChat = () => {
   const handleSelectEmployee = (email) => {
     setSelectedEmployee(email);
     setInput("");
-    // Clear unread badge for this employee immediately on selection
-    setUnreadMap((prev) => ({ ...prev, [email]: 0 }));
+    // ✅ Badge clears immediately on click — useChat clears it properly after markAsRead
   };
 
   const handleSend = () => {
@@ -102,8 +93,6 @@ const AdminChat = () => {
     }
   };
 
-
-
   return (
     <div style={{
       display: "flex", height: "calc(100vh - 120px)",
@@ -118,7 +107,6 @@ const AdminChat = () => {
         display: "flex", flexDirection: "column",
         background: "var(--color-background-secondary)", flexShrink: 0
       }}>
-        {/* Sidebar Header */}
         <div style={{
           padding: "16px", borderBottom: "0.5px solid var(--color-border-tertiary)"
         }}>
@@ -130,7 +118,6 @@ const AdminChat = () => {
           </div>
         </div>
 
-        {/* Employee List */}
         <div style={{ flex: 1, overflowY: "auto" }}>
           {employeeList.length === 0 ? (
             <div style={{
@@ -158,7 +145,6 @@ const AdminChat = () => {
                     transition: "background 0.15s"
                   }}
                 >
-                  {/* Avatar */}
                   <div style={{
                     width: "36px", height: "36px", borderRadius: "50%",
                     background: color.bg, color: color.text,
@@ -168,7 +154,6 @@ const AdminChat = () => {
                     {getInitials(email)}
                   </div>
 
-                  {/* Name + Email */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
                       fontSize: "13px", fontWeight: "500",
@@ -186,7 +171,6 @@ const AdminChat = () => {
                     </div>
                   </div>
 
-                  {/* Unread Badge — only shown when count > 0 */}
                   {unreadCount > 0 && (
                     <div style={{
                       background: "#E24B4A", color: "#fff", fontSize: "10px",
@@ -228,7 +212,6 @@ const AdminChat = () => {
           </div>
         ) : (
           <>
-            {/* Chat Header */}
             <div style={{
               padding: "14px 20px", borderBottom: "0.5px solid var(--color-border-tertiary)",
               display: "flex", alignItems: "center", gap: "12px",
@@ -257,7 +240,6 @@ const AdminChat = () => {
               }} />
             </div>
 
-            {/* Messages */}
             <div style={{
               flex: 1, overflowY: "auto", padding: "16px",
               display: "flex", flexDirection: "column", gap: "12px",
@@ -281,7 +263,7 @@ const AdminChat = () => {
                 messages.map((msg, index) => {
                   const isMine = msg.senderEmail === currentEmail;
                   return (
-                    <div key={index} style={{
+                    <div key={msg.id || index} style={{
                       display: "flex", flexDirection: "column",
                       alignItems: isMine ? "flex-end" : "flex-start",
                       maxWidth: "68%", alignSelf: isMine ? "flex-end" : "flex-start"
@@ -315,7 +297,6 @@ const AdminChat = () => {
               <div ref={bottomRef} />
             </div>
 
-            {/* Input */}
             <div style={{
               padding: "12px 16px", borderTop: "0.5px solid var(--color-border-tertiary)",
               display: "flex", gap: "10px", alignItems: "center",

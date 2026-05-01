@@ -4,23 +4,13 @@ import java.time.LocalDateTime;
 
 public class ChatMessageDTO {
 
-    // Who is sending the message
+    private Long id;
     private String senderEmail;
-
-    // Who is receiving the message
     private String receiverEmail;
-
-    // Message content
     private String content;
-
-    // ADMIN or EMPLOYEE
     private String senderRole;
-
-    // Populated when loading history (null when sending new message)
     private boolean isRead;
     private LocalDateTime sentAt;
-
-    // --- Constructors ---
 
     public ChatMessageDTO() {}
 
@@ -35,7 +25,13 @@ public class ChatMessageDTO {
         this.sentAt = sentAt;
     }
 
-    // --- Getters and Setters ---
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getSenderEmail() {
         return senderEmail;

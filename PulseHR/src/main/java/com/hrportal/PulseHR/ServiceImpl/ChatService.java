@@ -3,10 +3,13 @@ package com.hrportal.PulseHR.ServiceImpl;
 
 import com.hrportal.PulseHR.DTO.ChatMessageDTO;
 import com.hrportal.PulseHR.Entity.ChatMessage;
+import com.hrportal.PulseHR.Entity.Conversation;
 import com.hrportal.PulseHR.Repository.ChatMessageRepository;
 import com.hrportal.PulseHR.Repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -18,19 +21,38 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final UserRepository userRepository;
+    private final ConversationService conversationService;
+
+
 
     public ChatService(ChatMessageRepository chatMessageRepository,
                        SimpMessagingTemplate messagingTemplate,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       ConversationService conversationService) {
         this.chatMessageRepository = chatMessageRepository;
         this.messagingTemplate = messagingTemplate;
         this.userRepository = userRepository;
+        this.conversationService = conversationService;
     }
 
     // ─── Send a message (employee → admin or admin → employee) ───────────────
+    @Transactional
     public ChatMessageDTO sendMessage(ChatMessageDTO dto) {
 
-        // 1. Save to DB
+        // 1. Resolve assigned admin for this user
+        String userEmail = "USER".equalsIgnoreCase(dto.getSenderRole())
+                ? dto.getSenderEmail()
+                : dto.getReceiverEmail();
+
+        Conversation conversation = conversationService.findOrCreate(userEmail);
+
+        // 2. Validate admin side: if admin is sending, they must be the assigned admin
+        if ("ADMIN".equalsIgnoreCase(dto.getSenderRole()) &&
+                !conversation.getAdminEmail().equals(dto.getSenderEmail())) {
+            throw new AccessDeniedException("You are not assigned to this user");
+        }
+
+        // 3. Save message
         ChatMessage entity = new ChatMessage();
         entity.setSenderEmail(dto.getSenderEmail());
         entity.setReceiverEmail(dto.getReceiverEmail());
@@ -39,23 +61,17 @@ public class ChatService {
         entity.setRead(false);
         ChatMessage saved = chatMessageRepository.save(entity);
 
-        // 2. Build response DTO with sentAt populated
         ChatMessageDTO response = toDTO(saved);
 
-        // 3. Push to receiver's private queue in real-time
-        // React will subscribe to /user/queue/messages
-        messagingTemplate.convertAndSendToUser(
-                dto.getReceiverEmail(),
-                "/queue/messages",
-                response
-        );
+        // 4. ✅ Route to the ONE assigned party — not all admins
+        String target = "USER".equalsIgnoreCase(dto.getSenderRole())
+                ? conversation.getAdminEmail()   // user → their assigned admin only
+                : conversation.getUserEmail();    // admin → the user
 
-        // 4. Also push back to sender so their UI updates instantly
-        messagingTemplate.convertAndSendToUser(
-                dto.getSenderEmail(),
-                "/queue/messages",
-                response
-        );
+        messagingTemplate.convertAndSendToUser(target, "/queue/messages", response);
+
+        // 5. Echo to sender
+        messagingTemplate.convertAndSendToUser(dto.getSenderEmail(), "/queue/messages", response);
 
         return response;
     }
@@ -87,6 +103,7 @@ public class ChatService {
     }
 
     // ─── Mark messages as read when conversation is opened ───────────────────
+    @Transactional
     public void markAsRead(String senderEmail, String receiverEmail) {
         chatMessageRepository.markMessagesAsRead(senderEmail, receiverEmail);
     }
@@ -94,6 +111,7 @@ public class ChatService {
     // ─── Entity → DTO mapper ──────────────────────────────────────────────────
     private ChatMessageDTO toDTO(ChatMessage entity) {
         ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setId(entity.getId());
         dto.setSenderEmail(entity.getSenderEmail());
         dto.setReceiverEmail(entity.getReceiverEmail());
         dto.setContent(entity.getContent());

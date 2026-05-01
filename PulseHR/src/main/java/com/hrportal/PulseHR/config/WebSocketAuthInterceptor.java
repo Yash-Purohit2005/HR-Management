@@ -22,45 +22,43 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
         this.jwtService = jwtService;
     }
 
+
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        // Only intercept CONNECT frames (initial handshake)
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
 
-            // 1. Try Authorization header first (Bearer token)
             String token = null;
             String authHeader = accessor.getFirstNativeHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
             }
-
-            // 2. Fallback: try token header directly
             if (token == null) {
                 token = accessor.getFirstNativeHeader("token");
             }
-
             if (token == null) {
                 throw new IllegalArgumentException("Missing JWT token in WebSocket CONNECT");
             }
 
-            // 3. Extract email and validate token
             String email = jwtService.extractEmail(token);
             if (email == null || !jwtService.isTokenValid(token, email)) {
                 throw new IllegalArgumentException("Invalid or expired JWT token");
             }
 
-            // 4. Set the authenticated user into the WebSocket session
-            // Role will be used later for admin vs employee routing
+            // ✅ FIX 1: extract real role from JWT instead of hardcoding ROLE_USER
+            String role = jwtService.extractRole(token);
+
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             email,
                             null,
-                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                            List.of(new SimpleGrantedAuthority("ROLE_" + role))
                     );
 
+            // ✅ FIX 1: store role in session so controller can read it
+            accessor.getSessionAttributes().put("role", role);
             accessor.setUser(authentication);
         }
 

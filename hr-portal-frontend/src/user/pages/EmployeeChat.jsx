@@ -32,7 +32,7 @@ const avatarColors = [
   { bg: "#9FE1CB", text: "#085041" },
   { bg: "#FAC775", text: "#633806" },
   { bg: "#F4C0D1", text: "#72243E" },
-  { bg: "#CEC BF6", text: "#3C3489" },
+  { bg: "#CECBF6", text: "#3C3489" },
 ];
 
 const getAvatarColor = (email) => {
@@ -47,12 +47,13 @@ const EmployeeChat = () => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    API.get("/chat/admins")
-      .then((res) => {
-        if (res.data.length > 0) setAdminEmail(res.data[0]);
-      })
-      .catch((err) => console.error("Failed to fetch admins:", err));
-  }, []);
+  API.get("/chat/assigned-admin")
+    .then((res) => {
+       console.log("✅ Assigned admin response:", res.data);
+      setAdminEmail(res.data); // returns a single string, not an array
+    })
+    .catch((err) => console.error("Failed to fetch assigned admin:", err));
+}, []);
 
   const { messages, send, loading, currentEmail } = useChat(adminEmail);
 
