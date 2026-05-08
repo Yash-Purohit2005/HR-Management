@@ -1,6 +1,12 @@
 // src/services/chat/useChat.js
-import { useEffect, useRef, useState, useMemo } from "react";
-import { connectWebSocket, disconnectWebSocket, sendMessage } from "./chatService";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import {
+  connectWebSocket,
+  disconnectWebSocket,
+  sendMessage,
+  sendTypingEvent,
+  announceOnline,
+} from "./chatService";
 import API from "../api";
 import { getToken } from "../authService";
 import { jwtDecode } from "jwt-decode";
@@ -9,16 +15,15 @@ const useChat = (targetEmail) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [unreadMap, setUnreadMap] = useState({});
+  const [onlineUsers, setOnlineUsers] = useState({});
+  const [typingUsers, setTypingUsers] = useState({});
 
   const currentUser = useMemo(() => {
     const token = getToken();
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        return {
-          email: decoded.sub,
-          role: decoded.role,
-        };
+        return { email: decoded.sub, role: decoded.role };
       } catch (err) {
         console.error("Invalid token", err);
       }
@@ -29,75 +34,158 @@ const useChat = (targetEmail) => {
   const targetEmailRef = useRef(targetEmail);
   const currentUserRef = useRef(currentUser);
   const hasConnectedRef = useRef(false);
+  const typingTimeoutRef = useRef({});
+  const typingDebounceRef = useRef(null);
+  const isTypingRef = useRef(false);
 
-  useEffect(() => {
-    targetEmailRef.current = targetEmail;
-  }, [targetEmail]);
+  useEffect(() => { targetEmailRef.current = targetEmail; }, [targetEmail]);
+  useEffect(() => { currentUserRef.current = currentUser; }, [currentUser]);
 
-  useEffect(() => {
-    currentUserRef.current = currentUser;
-  }, [currentUser]);
+  // ─── Handle incoming chat messages ───────────────────────────────────────
+  const handleStatusEvent = useCallback((event) => {
+    const { email, type } = event;
 
-  const handleMessage = (newMessage) => {
-    const activeTarget = targetEmailRef.current;
-    const me = currentUserRef.current;
+    switch (type) {
+      case "ONLINE":
+        setOnlineUsers((prev) => ({ ...prev, [email]: true }));
+        break;
 
-    // ✅ Only guard against missing email — NOT missing activeTarget
-    // Without this fix, unread counts never increment when no conversation is open
-    if (!me.email) return;
+      case "OFFLINE":
+        setOnlineUsers((prev) => ({ ...prev, [email]: false }));
+        break;
 
-    const isRelevant =
-      activeTarget && (
-        newMessage.senderEmail === activeTarget ||
-        (newMessage.senderEmail === me.email &&
-          newMessage.receiverEmail === activeTarget)
-      );
+      case "STATUS_PING":
+        // Someone is asking if we're online — respond back
+        announceOnline(currentUserRef.current.email);
+        break;
 
-    if (isRelevant) {
-      setMessages((prev) => {
-        const isDuplicate = prev.some(
-          (m) =>
-            (m.id && m.id === newMessage.id) ||
-            (m.content === newMessage.content &&
-              m.sentAt === newMessage.sentAt)
-        );
-        if (isDuplicate) return prev;
-        return [...prev, newMessage].sort(
-          (a, b) => new Date(a.sentAt) - new Date(b.sentAt)
-        );
-      });
+      case "TYPING":
+        setTypingUsers((prev) => ({ ...prev, [email]: true }));
+        if (typingTimeoutRef.current[email]) {
+          clearTimeout(typingTimeoutRef.current[email]);
+        }
+        typingTimeoutRef.current[email] = setTimeout(() => {
+          setTypingUsers((prev) => ({ ...prev, [email]: false }));
+        }, 3000);
+        break;
+
+      case "STOP_TYPING":
+        if (typingTimeoutRef.current[email]) {
+          clearTimeout(typingTimeoutRef.current[email]);
+        }
+        setTypingUsers((prev) => ({ ...prev, [email]: false }));
+        break;
+
+      case "READ":
+       
+        setMessages((prev) => {
+         
+
+          return prev.map((m) => {
+            if (m.senderEmail === currentUserRef.current.email &&
+              m.receiverEmail === email) {
+              
+              return { ...m, isRead: true };
+            }
+            if (m.receiverEmail === currentUserRef.current.email &&
+              m.senderEmail === email) {
+              return { ...m, isRead: true };
+            }
+            return m;
+          });
+        });
+        break;
+
+      default:
+        break;
     }
+  }, []);
 
-    // ✅ Increment unread for messages not from the currently open conversation
-    if (
-      newMessage.receiverEmail === me.email &&
-      newMessage.senderEmail !== activeTarget
-    ) {
+  // ─── Handle incoming chat messages ───────────────────────────────────────
+  const handleMessage = useCallback((msg) => {
+    const myEmail = currentUserRef.current.email;
+    const target = targetEmailRef.current;
+
+
+    setMessages((prev) => {
+      // ── Case 1: My own message echo — replace temp ──
+      if (msg.senderEmail === myEmail) {
+        const hasTempMsg = prev.some((m) => m.id?.toString().startsWith("temp-"));
+        if (hasTempMsg) {
+          return prev.map((m) =>
+            m.id?.toString().startsWith("temp-") && m.content === msg.content
+              ? { ...msg, isRead: m.isRead || msg.isRead }
+              : m
+          );
+        }
+        // No temp message — avoid duplicate
+        const alreadyExists = prev.some((m) => m.id === msg.id);
+        if (alreadyExists) return prev;
+        return [...prev, msg];
+      }
+
+      // ── Case 2: Message from current conversation partner ──
+      if (msg.senderEmail === target) {
+        API.put("/chat/read", null, {
+          params: { senderEmail: msg.senderEmail },
+        }).catch(console.error);
+        return [...prev, { ...msg, isRead: true }];
+      }
+
+      // ── Case 3: Message from someone else — unread count only ──
       setUnreadMap((prev) => ({
         ...prev,
-        [newMessage.senderEmail]: (prev[newMessage.senderEmail] || 0) + 1,
+        [msg.senderEmail]: (prev[msg.senderEmail] || 0) + 1,
       }));
-    }
-  };
+      return prev; // ← don't add to messages list
+    });
+  }, []);
 
-  // ✅ Connect WebSocket only once
+  // ─── Typing handler with debounce ────────────────────────────────────────
+  const handleTyping = useCallback(() => {
+    if (!targetEmailRef.current || !currentUserRef.current.email) return;
+
+    if (!isTypingRef.current) {
+      isTypingRef.current = true;
+      sendTypingEvent(
+        currentUserRef.current.email,
+        targetEmailRef.current,
+        true
+      );
+    }
+
+    if (typingDebounceRef.current) clearTimeout(typingDebounceRef.current);
+    typingDebounceRef.current = setTimeout(() => {
+      isTypingRef.current = false;
+      sendTypingEvent(
+        currentUserRef.current.email,
+        targetEmailRef.current,
+        false
+      );
+    }, 2000);
+  }, []);
+
+  // ─── Connect WebSocket once ───────────────────────────────────────────────
   useEffect(() => {
     if (!currentUser.email || hasConnectedRef.current) return;
     hasConnectedRef.current = true;
-    connectWebSocket(handleMessage);
-    return () => {
-      disconnectWebSocket();
-    };
+
+    connectWebSocket(handleMessage, handleStatusEvent, () => {
+      // Announce ourselves as ONLINE after connection is ready
+      setTimeout(() => {
+        announceOnline(currentUser.email);
+        API.get("/chat/pending-reads").catch(console.error);
+
+      }, 500);
+    });
+
+    return () => { disconnectWebSocket(); };
   }, [currentUser.email]);
 
-  // ✅ Load history + mark read when target changes
+  // ─── Load history + mark read when target changes ────────────────────────
   useEffect(() => {
     if (!currentUser.email || !targetEmail) return;
-
-    if (
-      currentUser.email === targetEmail &&
-      currentUser.role === "ADMIN"
-    ) return;
+    if (currentUser.email === targetEmail && currentUser.role === "ADMIN") return;
 
     const isMeAdmin = currentUser.role === "ADMIN";
     const employeeEmail = isMeAdmin ? targetEmail : currentUser.email;
@@ -106,23 +194,17 @@ const useChat = (targetEmail) => {
     const loadHistory = async () => {
       try {
         setLoading(true);
-
         const res = await API.get("/chat/history", {
           params: { employeeEmail, adminEmail },
         });
-
         setMessages(
           res.data.sort((a, b) => new Date(a.sentAt) - new Date(b.sentAt))
         );
-
         await API.put("/chat/read", null, {
-          params: {
-            senderEmail: targetEmail,
-          },
+          params: { senderEmail: targetEmail },
         });
-        // ✅ Clear unread for this conversation after opening it
         setUnreadMap((prev) => ({ ...prev, [targetEmail]: 0 }));
-
+        await API.get("/chat/pending-reads").catch(console.error);
       } catch (err) {
         console.error("❌ History fetch failed", err);
       } finally {
@@ -133,20 +215,35 @@ const useChat = (targetEmail) => {
     loadHistory();
   }, [targetEmail, currentUser.email, currentUser.role]);
 
+  // ─── Send message ─────────────────────────────────────────────────────────
   const send = (content) => {
     if (!content.trim() || !targetEmail) return;
-    sendMessage({
+
+    const tempId = `temp-${Date.now()}`;
+
+    const optimisticMessage = {
       senderEmail: currentUser.email,
       receiverEmail: targetEmail,
       content,
       senderRole: currentUser.role,
-    });
+      sentAt: new Date().toISOString(),
+      isRead: false,
+      id: tempId,
+    };
+
+    const messageToSend = {
+      senderEmail: currentUser.email,
+      receiverEmail: targetEmail,
+      content,
+      senderRole: currentUser.role,
+    };
+
+    sendMessage(messageToSend);
+    setMessages((prev) => [...prev, optimisticMessage]);
   };
 
-  // ✅ Expose setInitialUnread so AdminChat can seed counts from API on mount
-  const setInitialUnread = (map) => {
-    setUnreadMap(map);
-  };
+
+  const setInitialUnread = (map) => setUnreadMap(map);
 
   return {
     messages,
@@ -156,6 +253,9 @@ const useChat = (targetEmail) => {
     currentRole: currentUser.role,
     unreadMap,
     setInitialUnread,
+    onlineUsers,
+    typingUsers,
+    handleTyping,
   };
 };
 

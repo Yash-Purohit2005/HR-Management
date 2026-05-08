@@ -50,5 +50,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     // In ChatMessageRepository.java
     List<ChatMessage> findByReceiverEmailAndIsReadFalse(String receiverEmail);
 
-
+    @Query("SELECT DISTINCT m.receiverEmail FROM ChatMessage m " +
+            "WHERE m.senderEmail = :senderEmail AND m.isRead = true")
+    List<String> findDistinctReadersOfSender(@Param("senderEmail") String senderEmail);
 }

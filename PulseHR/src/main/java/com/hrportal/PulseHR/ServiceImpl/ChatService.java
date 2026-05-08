@@ -68,6 +68,11 @@ public class ChatService {
                 ? conversation.getAdminEmail()   // user → their assigned admin only
                 : conversation.getUserEmail();    // admin → the user
 
+        System.out.println("📨 SenderRole: " + dto.getSenderRole());
+        System.out.println("📨 ReceiverEmail in DTO: " + dto.getReceiverEmail());
+        System.out.println("📨 Resolved target: " + target);
+        System.out.println("📨 conversation.getUserEmail(): " + conversation.getUserEmail());
+
         messagingTemplate.convertAndSendToUser(target, "/queue/messages", response);
 
         // 5. Echo to sender
@@ -106,6 +111,11 @@ public class ChatService {
     @Transactional
     public void markAsRead(String senderEmail, String receiverEmail) {
         chatMessageRepository.markMessagesAsRead(senderEmail, receiverEmail);
+    }
+
+    public List<String> getReadReceiptsPending(String senderEmail) {
+        // Find distinct receivers who have read this sender's messages
+        return chatMessageRepository.findDistinctReadersOfSender(senderEmail);
     }
 
     // ─── Entity → DTO mapper ──────────────────────────────────────────────────

@@ -46,16 +46,18 @@ const EmployeeChat = () => {
   const [input, setInput] = useState("");
   const bottomRef = useRef(null);
 
-  useEffect(() => {
-  API.get("/chat/assigned-admin")
-    .then((res) => {
-       console.log("✅ Assigned admin response:", res.data);
-      setAdminEmail(res.data); // returns a single string, not an array
-    })
-    .catch((err) => console.error("Failed to fetch assigned admin:", err));
-}, []);
+  const {
+    messages, send, loading, currentEmail,
+    onlineUsers, typingUsers, handleTyping,
+  } = useChat(adminEmail);
 
-  const { messages, send, loading, currentEmail } = useChat(adminEmail);
+  useEffect(() => {
+    API.get("/chat/assigned-admin")
+      .then((res) => {
+        setAdminEmail(res.data);
+      })
+      .catch((err) => console.error("Failed to fetch assigned admin:", err));
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -86,6 +88,7 @@ const EmployeeChat = () => {
   }
 
   const adminColor = getAvatarColor(adminEmail);
+  const isAdminOnline = onlineUsers[adminEmail]; // ← use adminEmail not selectedEmployee
 
   return (
     <div style={{
@@ -96,33 +99,63 @@ const EmployeeChat = () => {
     }}>
 
       {/* ── Header ── */}
+      {/* ── Header ── */}
       <div style={{
         padding: "14px 20px", borderBottom: "0.5px solid var(--color-border-tertiary)",
-        display: "flex", alignItems: "center", gap: "12px",
+        display: "flex", flexDirection: "column", // ← column
         background: "var(--color-background-primary)"
       }}>
-        <div style={{
-          width: "38px", height: "38px", borderRadius: "50%",
-          background: adminColor.bg, color: adminColor.text,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "13px", fontWeight: "500", flexShrink: 0
-        }}>
-          HR
-        </div>
-        <div>
-          <div style={{ fontSize: "14px", fontWeight: "500", color: "var(--color-text-primary)" }}>
-            HR Support
+        {/* top row */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <div style={{
+              width: "38px", height: "38px", borderRadius: "50%",
+              background: adminColor.bg, color: adminColor.text,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "13px", fontWeight: "500"
+            }}>
+              HR
+            </div>
+            <div style={{
+              position: "absolute", bottom: "1px", right: "1px",
+              width: "8px", height: "8px", borderRadius: "50%",
+              background: isAdminOnline ? "#639922" : "#888780",
+              border: "1.5px solid var(--color-background-primary)",
+              transition: "background 0.3s"
+            }} />
           </div>
-          <div style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginTop: "1px" }}>
-            {formatName(adminEmail)}
+          <div>
+            <div style={{ fontSize: "14px", fontWeight: "500", color: "var(--color-text-primary)" }}>
+              HR Support
+            </div>
+            <div style={{
+              fontSize: "12px", marginTop: "1px",
+              color: isAdminOnline ? "#639922" : "var(--color-text-secondary)"
+            }}>
+              {isAdminOnline ? "Online" : "Offline"}
+            </div>
           </div>
+          <div style={{
+            marginLeft: "auto", width: "8px", height: "8px", borderRadius: "50%",
+            background: isAdminOnline ? "#639922" : "#888780",
+            border: "1.5px solid var(--color-background-primary)",
+            transition: "background 0.3s"
+          }} />
         </div>
-        <div style={{
-          marginLeft: "auto", width: "8px", height: "8px", borderRadius: "50%",
-          background: "#639922", border: "1.5px solid var(--color-background-primary)"
-        }} />
-      </div>
 
+        {/* ── Typing indicator centered below header ── */}
+        {typingUsers[adminEmail] && (
+          <div style={{
+            textAlign: "center",
+            fontSize: "11px",
+            color: "#185FA5",
+            fontStyle: "italic",
+            marginTop: "6px"
+          }}>
+            HR Admin is typing...
+          </div>
+        )}
+      </div>
       {/* ── Messages ── */}
       <div style={{
         flex: 1, overflowY: "auto", padding: "16px",
@@ -162,7 +195,7 @@ const EmployeeChat = () => {
           messages.map((msg, index) => {
             const isMine = msg.senderEmail === currentEmail;
             return (
-              <div key={index} style={{
+              <div key={msg.id || index} style={{
                 display: "flex", flexDirection: "column",
                 alignItems: isMine ? "flex-end" : "flex-start",
                 maxWidth: "68%", alignSelf: isMine ? "flex-end" : "flex-start"
@@ -183,11 +216,21 @@ const EmployeeChat = () => {
                 }}>
                   {msg.content}
                 </div>
+                {/* ── Timestamp + Read Receipt ── */}
                 <div style={{
                   fontSize: "11px", marginTop: "3px", padding: "0 4px",
-                  color: "var(--color-text-secondary)"
+                  color: "var(--color-text-secondary)",
+                  display: "flex", alignItems: "center", gap: "3px"
                 }}>
                   {formatTime(msg.sentAt)}
+                  {isMine && (
+                    <span style={{
+                      fontSize: "12px",
+                      color: msg.isRead ? "#185FA5" : "var(--color-text-secondary)"
+                    }}>
+                      ✓✓
+                    </span>
+                  )}
                 </div>
               </div>
             );
@@ -195,6 +238,7 @@ const EmployeeChat = () => {
         )}
         <div ref={bottomRef} />
       </div>
+
 
       {/* ── Input ── */}
       <div style={{
@@ -205,7 +249,10 @@ const EmployeeChat = () => {
         <textarea
           rows={1}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+            handleTyping(); // ← typing indicator trigger
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Type a message to HR Support..."
           style={{

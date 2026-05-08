@@ -1,11 +1,13 @@
 package com.hrportal.PulseHR.Controller;
 
 import com.hrportal.PulseHR.DTO.ChatMessageDTO;
+import com.hrportal.PulseHR.DTO.StatusEventDTO;
 import com.hrportal.PulseHR.ServiceImpl.ChatService;
 import com.hrportal.PulseHR.ServiceImpl.ConversationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,9 +25,12 @@ public class ChatController {
 
     private final ChatService chatService;
     private final ConversationService conversationService;
-    public ChatController(ChatService chatService, ConversationService conversationService) {
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public ChatController(ChatService chatService, ConversationService conversationService, SimpMessagingTemplate messagingTemplate) {
         this.chatService = chatService;
         this.conversationService = conversationService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     // ─── WebSocket: Send a message (employee → admin or admin → employee) ─────
@@ -93,6 +98,13 @@ public class ChatController {
 
         String receiver = authentication.getName();
         chatService.markAsRead(senderEmail, receiver);
+
+        StatusEventDTO readEvent = new StatusEventDTO(receiver, "READ", senderEmail);
+        messagingTemplate.convertAndSendToUser(
+                senderEmail, "/queue/status", readEvent
+        );
+
+        System.out.println("✅ READ receipt sent from " + receiver + " to " + senderEmail);
     }
 
     // ─── REST: Get all admin emails (for employee to send message to) ─────────────
@@ -112,5 +124,56 @@ public class ChatController {
     @GetMapping("/my-users")
     public List<String> getMyUsers(Principal principal) {
         return conversationService.getAssignedUsers(principal.getName());
+    }
+
+    // Add to ChatController.java
+    @MessageMapping("/chat.typing")
+    public void handleTyping(@Payload StatusEventDTO dto, Principal principal) {
+        // Override email — prevent spoofing
+        dto.setEmail(principal.getName());
+
+        // Send typing event to target only
+        messagingTemplate.convertAndSendToUser(
+                dto.getTargetEmail(), "/queue/status", dto
+        );
+    }
+
+    // ─── Send pending READ receipts to user on reconnect ─────────────────
+    @GetMapping("/pending-reads")
+    public void sendPendingReads(Principal principal) {
+        String email = principal.getName();
+        // Find all messages sent by this user that are now read
+        List<String> readByList = chatService.getReadReceiptsPending(email);
+        for (String readerEmail : readByList) {
+            StatusEventDTO readEvent = new StatusEventDTO(readerEmail, "READ", email);
+            messagingTemplate.convertAndSendToUser(
+                    email, "/queue/status", readEvent
+            );
+        }
+    }
+
+    // ─── WebSocket: Request current online status ─────────────────────────────
+    @MessageMapping("/chat.status.request")
+    public void handleStatusRequest(@Payload StatusEventDTO dto, Principal principal) {
+        String requesterEmail = principal.getName();
+        List<String> counterparts = conversationService.getAllCounterparts(requesterEmail);
+
+        // 1. Tell all counterparts that requester is ONLINE (existing logic)
+        for (String counterpart : counterparts) {
+            StatusEventDTO onlineEvent = new StatusEventDTO(requesterEmail, "ONLINE", counterpart);
+            messagingTemplate.convertAndSendToUser(
+                    counterpart, "/queue/status", onlineEvent
+            );
+        }
+
+        // 2. NEW — Also tell the requester which of their counterparts are currently online
+        // We can't know who is online server-side without a presence store,
+        // so we ask each counterpart to announce themselves back
+        for (String counterpart : counterparts) {
+            StatusEventDTO pingEvent = new StatusEventDTO(requesterEmail, "STATUS_PING", counterpart);
+            messagingTemplate.convertAndSendToUser(
+                    counterpart, "/queue/status", pingEvent
+            );
+        }
     }
 }

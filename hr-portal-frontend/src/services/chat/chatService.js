@@ -7,38 +7,31 @@ const SOCKET_URL = "http://localhost:8080/ws";
 
 let stompClient = null;
 let isConnected = false;
-let messageQueue = []; // ✅ Queue messages until connected
+let messageQueue = [];
 
-// ─── Connect to WebSocket ─────────────────────────────────────────────────────
-export const connectWebSocket = (onMessageReceived) => {
-  // ✅ Prevent duplicate connections
-  if (stompClient && isConnected) {
-    console.log("✅ WebSocket already connected");
-    return;
-  }
+// ─── Connect ──────────────────────────────────────────────────────────────────
+export const connectWebSocket = (onMessageReceived, onStatusEvent, onConnected) => {
+  if (stompClient && isConnected) return;
 
   const token = getToken();
 
   stompClient = new Client({
     webSocketFactory: () => new SockJS(SOCKET_URL),
-
-    connectHeaders: {
-      Authorization: `Bearer ${token}`,
-    },
-
+    connectHeaders: { Authorization: `Bearer ${token}` },
     reconnectDelay: 5000,
 
     onConnect: () => {
-      console.log("✅ WebSocket connected");
+      
       isConnected = true;
 
-      // Subscribe to private messages
       stompClient.subscribe("/user/queue/messages", (message) => {
-        const parsed = JSON.parse(message.body);
-        onMessageReceived(parsed);
+        onMessageReceived(JSON.parse(message.body));
       });
 
-      // ✅ Flush any queued messages
+      stompClient.subscribe("/user/queue/status", (message) => {
+        if (onStatusEvent) onStatusEvent(JSON.parse(message.body));
+      });
+
       messageQueue.forEach((dto) => {
         stompClient.publish({
           destination: "/app/chat.send",
@@ -46,6 +39,9 @@ export const connectWebSocket = (onMessageReceived) => {
         });
       });
       messageQueue = [];
+
+      // ✅ Notify caller that connection is ready
+      if (onConnected) onConnected();
     },
 
     onStompError: (frame) => {
@@ -54,7 +50,6 @@ export const connectWebSocket = (onMessageReceived) => {
     },
 
     onDisconnect: () => {
-      console.log("🔌 WebSocket disconnected");
       isConnected = false;
     },
   });
@@ -62,7 +57,16 @@ export const connectWebSocket = (onMessageReceived) => {
   stompClient.activate();
 };
 
-// ─── Send a message ───────────────────────────────────────────────────────────
+// ─── Announce self as online to all counterparts ──────────────────────────
+export const announceOnline = (email) => {
+  if (!stompClient || !isConnected) return;
+  stompClient.publish({
+    destination: "/app/chat.status.request",
+    body: JSON.stringify({ email }),
+  });
+};
+
+// ─── Send chat message ────────────────────────────────────────────────────────
 export const sendMessage = (chatMessageDTO) => {
   if (stompClient && isConnected) {
     stompClient.publish({
@@ -70,10 +74,21 @@ export const sendMessage = (chatMessageDTO) => {
       body: JSON.stringify(chatMessageDTO),
     });
   } else {
-    // ✅ Queue message if not yet connected
-    console.warn("⚠️ WebSocket not connected yet, queuing message...");
     messageQueue.push(chatMessageDTO);
   }
+};
+
+// ─── Send typing event ────────────────────────────────────────────────────────
+export const sendTypingEvent = (senderEmail, targetEmail, isTyping) => {
+  if (!stompClient || !isConnected) return;
+  stompClient.publish({
+    destination: "/app/chat.typing",
+    body: JSON.stringify({
+      email: senderEmail,
+      targetEmail,
+      type: isTyping ? "TYPING" : "STOP_TYPING",
+    }),
+  });
 };
 
 // ─── Disconnect ───────────────────────────────────────────────────────────────
@@ -83,6 +98,5 @@ export const disconnectWebSocket = () => {
     stompClient = null;
     isConnected = false;
     messageQueue = [];
-    console.log("🔌 WebSocket manually disconnected");
   }
 };

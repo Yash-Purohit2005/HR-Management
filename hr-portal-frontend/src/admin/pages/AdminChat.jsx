@@ -42,15 +42,18 @@ const getAvatarColor = (email) => {
   return avatarPalette[index];
 };
 
+
 const AdminChat = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [input, setInput] = useState("");
   const bottomRef = useRef(null);
 
-  // ✅ unreadMap now comes from useChat — single source of truth
-  const { messages, send, loading, currentEmail, unreadMap, setInitialUnread } =
-    useChat(selectedEmployee);
+  const {
+    messages, send, loading, currentEmail,
+    unreadMap, setInitialUnread,
+    onlineUsers, typingUsers, handleTyping,
+  } = useChat(selectedEmployee);
 
   // ─── Fetch assigned employee list ─────────────────────────────────────────
   useEffect(() => {
@@ -61,7 +64,6 @@ const AdminChat = () => {
   }, [currentEmail]);
 
   // ─── Seed unread counts from API on mount ─────────────────────────────────
-  // This handles counts for messages received before the admin opened the app
   useEffect(() => {
     if (!currentEmail) return;
     API.get("/chat/unread")
@@ -77,7 +79,6 @@ const AdminChat = () => {
   const handleSelectEmployee = (email) => {
     setSelectedEmployee(email);
     setInput("");
-    // ✅ Badge clears immediately on click — useChat clears it properly after markAsRead
   };
 
   const handleSend = () => {
@@ -103,9 +104,9 @@ const AdminChat = () => {
 
       {/* ── Sidebar ── */}
       <div style={{
-        width: "260px", borderRight: "0.5px solid var(--color-border-tertiary)",
+        width: "260px", borderRight: "1.5px solid var(--color-border-tertiary)",
         display: "flex", flexDirection: "column",
-        background: "var(--color-background-secondary)", flexShrink: 0
+        background: "var(--color-background-tertiary)", flexShrink: 0
       }}>
         <div style={{
           padding: "16px", borderBottom: "0.5px solid var(--color-border-tertiary)"
@@ -132,6 +133,7 @@ const AdminChat = () => {
               const color = getAvatarColor(email);
               const isActive = selectedEmployee === email;
               const unreadCount = unreadMap[email] || 0;
+              const isOnline = onlineUsers[email]; // ← online check per sidebar item
               return (
                 <div
                   key={email}
@@ -145,13 +147,24 @@ const AdminChat = () => {
                     transition: "background 0.15s"
                   }}
                 >
-                  <div style={{
-                    width: "36px", height: "36px", borderRadius: "50%",
-                    background: color.bg, color: color.text,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "12px", fontWeight: "500", flexShrink: 0
-                  }}>
-                    {getInitials(email)}
+                  {/* ── Avatar with online dot ── */}
+                  <div style={{ position: "relative", flexShrink: 0 }}>
+                    <div style={{
+                      width: "36px", height: "36px", borderRadius: "50%",
+                      background: color.bg, color: color.text,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "12px", fontWeight: "500"
+                    }}>
+                      {getInitials(email)}
+                    </div>
+                    {/* ── Online indicator dot on avatar ── */}
+                    <div style={{
+                      position: "absolute", bottom: "1px", right: "1px",
+                      width: "8px", height: "8px", borderRadius: "50%",
+                      background: isOnline ? "#639922" : "#888780",
+                      border: "1.5px solid var(--color-background-secondary)",
+                      transition: "background 0.3s"
+                    }} />
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -162,12 +175,16 @@ const AdminChat = () => {
                     }}>
                       {formatName(email)}
                     </div>
+                    {/* ── Show typing in sidebar too ── */}
                     <div style={{
-                      fontSize: "11px", color: "var(--color-text-secondary)",
+                      fontSize: "11px", marginTop: "1px",
                       overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                      marginTop: "1px"
+                      color: typingUsers[email]
+                        ? "#185FA5"
+                        : "var(--color-text-secondary)",
+                      fontStyle: typingUsers[email] ? "italic" : "normal"
                     }}>
-                      {email}
+                      {typingUsers[email] ? "typing..." : email}
                     </div>
                   </div>
 
@@ -212,34 +229,57 @@ const AdminChat = () => {
           </div>
         ) : (
           <>
+            {/* ── Header ── */}
             <div style={{
               padding: "14px 20px", borderBottom: "0.5px solid var(--color-border-tertiary)",
-              display: "flex", alignItems: "center", gap: "12px",
+              display: "flex", flexDirection: "column",
               background: "var(--color-background-primary)"
             }}>
-              <div style={{
-                width: "38px", height: "38px", borderRadius: "50%",
-                background: getAvatarColor(selectedEmployee).bg,
-                color: getAvatarColor(selectedEmployee).text,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "13px", fontWeight: "500", flexShrink: 0
-              }}>
-                {getInitials(selectedEmployee)}
-              </div>
-              <div>
-                <div style={{ fontSize: "14px", fontWeight: "500", color: "var(--color-text-primary)" }}>
-                  {formatName(selectedEmployee)}
+              {/* top row */}
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{
+                  width: "38px", height: "38px", borderRadius: "50%",
+                  background: getAvatarColor(selectedEmployee).bg,
+                  color: getAvatarColor(selectedEmployee).text,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "13px", fontWeight: "500", flexShrink: 0
+                }}>
+                  {getInitials(selectedEmployee)}
                 </div>
-                <div style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginTop: "1px" }}>
-                  {selectedEmployee}
+                <div>
+                  <div style={{ fontSize: "14px", fontWeight: "500", color: "var(--color-text-primary)" }}>
+                    {formatName(selectedEmployee)}
+                  </div>
+                  <div style={{
+                    fontSize: "12px", marginTop: "1px",
+                    color: onlineUsers[selectedEmployee] ? "#639922" : "var(--color-text-secondary)"
+                  }}>
+                    {onlineUsers[selectedEmployee] ? "Online" : "Offline"}
+                  </div>
                 </div>
+                <div style={{
+                  marginLeft: "auto", width: "8px", height: "8px", borderRadius: "50%",
+                  background: onlineUsers[selectedEmployee] ? "#639922" : "#888780",
+                  border: "1.5px solid var(--color-background-primary)",
+                  transition: "background 0.3s"
+                }} />
               </div>
-              <div style={{
-                marginLeft: "auto", width: "8px", height: "8px", borderRadius: "50%",
-                background: "#639922", border: "1.5px solid var(--color-background-primary)"
-              }} />
+
+              {/* ── Typing indicator centered in header ── */}
+              {typingUsers[selectedEmployee] && (
+                <div style={{
+                  textAlign: "center",
+                  fontSize: "11px",
+                  color: "#185FA5",
+                  fontStyle: "italic",
+                  marginTop: "6px"
+                }}>
+                  {formatName(selectedEmployee)} is typing...
+                </div>
+              )}
             </div>
 
+            {/* ── Messages ── */}
             <div style={{
               flex: 1, overflowY: "auto", padding: "16px",
               display: "flex", flexDirection: "column", gap: "12px",
@@ -284,11 +324,21 @@ const AdminChat = () => {
                       }}>
                         {msg.content}
                       </div>
+                      {/* ── Timestamp + Read Receipt ── */}
                       <div style={{
                         fontSize: "11px", marginTop: "3px", padding: "0 4px",
-                        color: "var(--color-text-secondary)"
+                        color: "var(--color-text-secondary)",
+                        display: "flex", alignItems: "center", gap: "3px"
                       }}>
                         {formatTime(msg.sentAt)}
+                        {isMine && (
+                          <span style={{
+                            fontSize: "12px",
+                            color: msg.isRead ? "#185FA5" : "var(--color-text-secondary)"
+                          }}>
+                            ✓✓
+                          </span>
+                        )}
                       </div>
                     </div>
                   );
@@ -297,6 +347,8 @@ const AdminChat = () => {
               <div ref={bottomRef} />
             </div>
 
+           
+            {/* ── Input ── */}
             <div style={{
               padding: "12px 16px", borderTop: "0.5px solid var(--color-border-tertiary)",
               display: "flex", gap: "10px", alignItems: "center",
@@ -305,7 +357,10 @@ const AdminChat = () => {
               <textarea
                 rows={1}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  handleTyping(); // ← typing indicator trigger
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder={`Reply to ${formatName(selectedEmployee)}...`}
                 style={{
