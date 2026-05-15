@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import API from "../services/api";
 
@@ -7,6 +7,58 @@ function ForgotPassword() {
     const [status, setStatus] = useState("idle"); // idle, loading, success, error
     const [message, setMessage] = useState("");
 
+    const [rateLimitTimer, setRateLimitTimer] = useState(0);
+    const [rateLimitedEmail, setRateLimitedEmail] = useState("");
+
+    const isRateLimited =
+        rateLimitTimer > 0 &&
+        email.trim().toLowerCase() ===
+        rateLimitedEmail.trim().toLowerCase();
+
+    useEffect(() => {
+        const checkStatus = async () => {
+            const savedEmail = localStorage.getItem("fp_rate_limited_email");
+            if (!savedEmail) return;
+
+            try {
+                const res = await API.get(`/auth/forgot-password/status?email=${savedEmail}`);
+                const { retryAfter } = res.data;
+                if (retryAfter > 0) {
+                    // setEmail(savedEmail);
+                    setRateLimitTimer(retryAfter); // exact seconds from server
+                    setRateLimitedEmail(savedEmail);
+                    // setStatus("error");
+                    // setMessage("Too many reset requests. Please wait.");
+                } else {
+                    localStorage.removeItem("fp_rate_limited_email");
+                }
+            } catch (_) { }
+        };
+        checkStatus();
+    }, []);
+
+    useEffect(() => {
+        if (rateLimitTimer <= 0) return;
+
+        const interval = setInterval(() => {
+            setRateLimitTimer((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    localStorage.removeItem("fp_rate_limited_email"); 
+                    // ONLY reset if the current view is the rate limit error.
+                    // This prevents wiping out "Success" messages or other errors.
+                    setStatus((current) => (current === "error" ? "idle" : current));
+                    setMessage((msg) => (msg.includes("Too many") ? "" : msg));
+
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [rateLimitTimer > 0]); // Only re-run when the timer starts/stops
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus("loading");
@@ -14,9 +66,26 @@ function ForgotPassword() {
             await API.post("/auth/forgot-password", { email });
             setStatus("success");
             setMessage("Check your email for the reset link.");
+            localStorage.removeItem("fp_rate_limited_email"); 
         } catch (err) {
-            setStatus("error");
-            setMessage(err.response?.data?.message || "Something went wrong.");
+
+            if (err.response?.status === 429) {
+                const retryAfter = err.response?.data?.retryAfter ?? 600;
+                localStorage.setItem("fp_rate_limited_email", email); // only save email, not timer
+                setRateLimitTimer(retryAfter); // server-accurate countdown
+                setRateLimitedEmail(email);
+                setStatus("error");
+                setMessage("Too many reset requests. Please wait.");
+            } else {
+
+                setStatus("error");
+
+                setMessage(
+                    err.response?.data?.error ||
+                    err.response?.data?.message ||
+                    "Something went wrong."
+                );
+            }
         }
     };
 
@@ -53,7 +122,7 @@ function ForgotPassword() {
 
                 {status === "success" ? (
                     <div style={styles.successBox}>
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{marginRight: 8}}>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ marginRight: 8 }}>
                             <circle cx="7" cy="7" r="6" stroke="#155724" strokeWidth="1.5" />
                             <path d="M4 7l2 2 4-4" stroke="#155724" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -76,23 +145,48 @@ function ForgotPassword() {
                             <label style={styles.label}>Email Address</label>
                             <div style={{ position: "relative" }}>
                                 <span style={styles.inputIcon}><UserIcon /></span>
-                                <input 
-                                    type="email" 
+                                <input
+                                    type="email"
                                     placeholder="name@company.com"
-                                    style={styles.input} 
-                                    value={email} 
-                                    onChange={(e) => setEmail(e.target.value)} 
-                                    required 
+                                    style={styles.input}
+                                    value={email}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setEmail(value);
+
+                                        // If the user types an email different from the one that was blocked,
+                                        // clear the error so they can try the new email immediately.
+                                        if (
+                                            value.trim().toLowerCase() !== rateLimitedEmail.trim().toLowerCase()
+                                        ) {
+                                            setStatus("idle");
+                                            setMessage("");
+                                        } else if (rateLimitTimer > 0) {
+                                            // If they switch BACK to the blocked email, show the error again
+                                            setStatus("error");
+                                            setMessage("Too many reset requests. Please wait.");
+                                        }
+                                    }}
+                                    required
                                 />
                             </div>
                         </div>
 
-                        <button type="submit" disabled={status === "loading"} style={styles.btn}>
-                            {status === "loading" ? "Sending Request..." : "Send Reset Link"}
-                            {status !== "loading" && (
-                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                                    <path d="M3 7.5h9M9 4l3.5 3.5L9 11" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
+                        <button
+                            type="submit"
+                            disabled={status === "loading" || isRateLimited}
+                            style={{
+                                ...styles.btn,
+                                opacity: status === "loading" || isRateLimited ? 0.5 : 1,
+                                cursor: isRateLimited ? "not-allowed" : "pointer",
+                            }}
+                        >
+                            {isRateLimited ? (
+                                `Wait ${Math.floor(rateLimitTimer / 60)}m ${rateLimitTimer % 60}s`
+                            ) : status === "loading" ? (
+                                "Sending..."
+                            ) : (
+                                "Send Reset Link"
                             )}
                         </button>
                     </form>
@@ -104,7 +198,7 @@ function ForgotPassword() {
                     ← Back to Login
                 </Link>
             </div>
-            
+
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@700&display=swap');
             `}</style>
@@ -213,11 +307,11 @@ const styles = {
         marginBottom: 18,
     },
     backLink: {
-        display: 'block', 
-        textAlign: 'center', 
-        fontSize: 13, 
-        color: '#C5703A', 
-        textDecoration: 'none', 
+        display: 'block',
+        textAlign: 'center',
+        fontSize: 13,
+        color: '#C5703A',
+        textDecoration: 'none',
         fontWeight: 600
     }
 };

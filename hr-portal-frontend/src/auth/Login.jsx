@@ -10,17 +10,56 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+
+
+  const [rateLimitTimer, setRateLimitTimer] = useState(0);
+
+  const isRateLimited = rateLimitTimer > 0;
+
+
+  useEffect(() => {
+
+  if (rateLimitTimer <= 0) return;
+
+  const interval = setInterval(() => {
+
+    setRateLimitTimer((prev) => {
+
+      if (prev <= 1) {
+        clearInterval(interval);
+        setError("");
+        return 0;
+      }
+
+      return prev - 1;
+    });
+
+  }, 1000);
+
+  return () => clearInterval(interval);
+
+}, [rateLimitTimer]);
+
+
+
   useEffect(() => {
     localStorage.removeItem("jwt"); // clear any old token on page load
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (isRateLimited) return;
+
     setLoading(true);
     setError("");
 
     try {
-      const response = await API.post("/auth/login", { email, password }, { withCredentials: true });
+      const response = await API.post(
+        "/auth/login",
+        { email, password },
+        { withCredentials: true }
+      );
 
       localStorage.setItem("jwt", response.data.token);
       localStorage.setItem("role", response.data.role);
@@ -31,14 +70,33 @@ function Login() {
       } else {
         navigate("/user");
       }
+
     } catch (error) {
-      const message = error.response?.data?.message ||
-        (error.response?.status === 500 && error.response?.data?.message?.includes("inactive")
-          ? "Account is inactive. Contact admin."
-          : "Invalid email or password");
-      setError(message);
+
+      console.log("FULL ERROR:", error);
+      console.log("STATUS:", error.response?.status);
+
+      if (error.response?.status === 429) {
+
+        setRateLimitTimer(60);
+        setError("Too many login attempts. Please wait 60 seconds.");
+
+      }  else if (
+        error.response?.status === 500 &&
+        error.response?.data?.message?.includes("inactive")
+      ) {
+
+        setError("Account is inactive. Contact admin.");
+
+      } else {
+
+        setError("Invalid username or password");
+      }
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
@@ -143,13 +201,21 @@ function Login() {
             </div>
           </div>
 
-          <button type="submit" disabled={loading} style={styles.btn}>
-            {loading ? "Authenticating…" : "Login to Account"}
-            {!loading && (
-              <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                <path d="M3 7.5h9M9 4l3.5 3.5L9 11" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
+          <button
+            type="submit"
+            disabled={loading || isRateLimited}
+            style={{
+              ...styles.btn,
+              opacity: loading || isRateLimited ? 0.6 : 1,
+              cursor: loading || isRateLimited ? "not-allowed" : "pointer",
+              pointerEvents: loading || isRateLimited ? "none" : "auto"
+            }}
+          >
+            {isRateLimited
+              ? `Try again in ${rateLimitTimer}s`
+              : loading
+                ? "Authenticating..."
+                : "Login to Account"}
           </button>
         </form>
 

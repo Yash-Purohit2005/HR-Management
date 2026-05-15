@@ -23,6 +23,16 @@ const Sidebar = ({ logout }) => {
       <div>
         
         <nav className="flex flex-col mt-2 text-[15px] font-medium">
+
+          
+          <Link
+            to="/user/leaves"
+            className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
+          >
+            <FiHome className="mr-3 text-blue-700 text-lg" />
+            Dashboard
+          </Link>
+
           <Link
             to="/user/profile"
             className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
@@ -45,14 +55,6 @@ const Sidebar = ({ logout }) => {
           >
             <FiKey className="mr-3 text-blue-700 text-lg" />
             Change Password
-          </Link>
-
-          <Link
-            to="/user/leaves"
-            className="flex items-center px-4 py-3 hover:bg-blue-100 transition"
-          >
-            <FiHome className="mr-3 text-blue-700 text-lg" />
-            Dashboard
           </Link>
 
           <Link

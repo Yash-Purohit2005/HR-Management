@@ -7,15 +7,9 @@
     <list default="true" id="1d323f54-8371-4421-992d-68009eb4698d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PulseHR/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/ChatController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/PulseHrApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/PulseHrApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/ChatMessageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Repository/ChatMessageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ChatService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ConversationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/ServiceImpl/ConversationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminChat.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/admin/pages/AdminChat.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/services/chat/chatService.js" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/chat/chatService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/services/chat/useChat.js" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/services/chat/useChat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/EmployeeChat.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/user/pages/EmployeeChat.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/auth/ForgotPassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/ForgotPassword.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/auth/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/Login.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,27 +35,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.PulseHR [install].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;Spring Boot.PulseHrApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/chat-fix&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.PulseHR [install].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.PulseHrApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="PulseHrApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <envs>

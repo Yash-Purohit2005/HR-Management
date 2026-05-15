@@ -3,6 +3,8 @@ package com.hrportal.PulseHR.Controller;
 import com.hrportal.PulseHR.DTO.*;
 import com.hrportal.PulseHR.Security.JwtService;
 import com.hrportal.PulseHR.Service.AuthService;
+import com.hrportal.PulseHR.ServiceImpl.RateLimiterService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtService jwtService;
+    private final RateLimiterService rateLimiterService;
 
-    public AuthController(AuthService authService, JwtService jwtService) {
+    public AuthController(AuthService authService, JwtService jwtService,  RateLimiterService rateLimiterService) {
         this.authService = authService;
         this.jwtService = jwtService;
+        this.rateLimiterService = rateLimiterService;
     }
 
     @PostMapping("/register")
@@ -33,16 +37,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(
+    public ResponseEntity<?> login(
          @Valid   @RequestBody LoginRequestDTO loginRequestDTO,
-            HttpServletResponse response) {
+         HttpServletRequest request, HttpServletResponse response) {
 
+        String ip = request.getRemoteAddr();
+
+        if (!rateLimiterService.tryLoginRequest(ip)) {
+            return ResponseEntity
+                    .status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of("error", "Too many login attempts. Please wait 1 minute and try again."));
+        }
 
         AuthResponseDTO authResponse = authService.login(loginRequestDTO);
-
         jwtService.setTokenInCookie(response, authResponse.getToken());
-
-        // Step 3: Return response with token and role and username
         return ResponseEntity.ok(authResponse);
     }
 
@@ -57,9 +65,24 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> requestReset(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> requestReset(
+            @RequestBody Map<String, String> request,
+            HttpServletRequest httpRequest) {
+
+        String email = request.get("email");
+
+        if (!rateLimiterService.tryForgotPasswordRequest(email)) {
+            long retryAfter = rateLimiterService.getForgotPasswordRetryAfter(email);
+            return ResponseEntity
+                    .status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of(
+                            "error", "Too many requests. Please wait before trying again.",
+                            "retryAfter", retryAfter  // 👈 exact seconds from bucket
+                    ));
+        }
+
         try {
-            authService.processForgotPassword(request.get("email"));
+            authService.processForgotPassword(email);
             return ResponseEntity.ok(Map.of("message", "Reset link sent successfully."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
@@ -75,6 +98,12 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
         }
+    }
+
+    @GetMapping("/forgot-password/status")
+    public ResponseEntity<?> forgotPasswordStatus(@RequestParam String email) {
+        long retryAfter = rateLimiterService.getForgotPasswordRetryAfter(email);
+        return ResponseEntity.ok(Map.of("retryAfter", retryAfter));
     }
 
 }
