@@ -2,7 +2,7 @@
 import axios from "axios";
 import { getToken } from "../../services/authService";
 
-const BASE_URL = "http://localhost:8080/api/notifications";
+const BASE_URL = "https://hr-management-production-7384.up.railway.app/api/notifications";
 
 // GET: Fetch top 10 notifications for the logged-in user
 export const getUserNotifications = async () => {

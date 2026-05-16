@@ -3,7 +3,7 @@ import { getToken } from "./authService";
 
 
 const API = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://hr-management-production-7384.up.railway.app/api",
   withCredentials: true,
 });
 // Automatically attach JWT to all requests

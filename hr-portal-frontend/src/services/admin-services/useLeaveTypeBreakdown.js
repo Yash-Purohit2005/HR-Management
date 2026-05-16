@@ -11,7 +11,7 @@ export const useLeaveTypeBreakdown = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:8080/api/leaves/stats/leave-type-breakdown", {
+      .get("https://hr-management-production-7384.up.railway.app/api/leaves/stats/leave-type-breakdown", {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then((res) => setBreakdown(res.data))

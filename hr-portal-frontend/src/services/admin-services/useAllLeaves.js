@@ -13,7 +13,7 @@ export const useAllLeaves = (pageSize = 10, onStatusChange) => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:8080/api/leaves/all", {
+      .get("https://hr-management-production-7384.up.railway.app/api/leaves/all", {
         params: { page, size: pageSize, sortBy, sortDir },
         headers: { Authorization: `Bearer ${getToken()}` },
       })
@@ -26,7 +26,7 @@ export const useAllLeaves = (pageSize = 10, onStatusChange) => {
 
   const updateStatus = useCallback(async (leaveId, status) => {
     await axios.put(
-      `http://localhost:8080/api/leaves/update-status/${leaveId}`,
+      `https://hr-management-production-7384.up.railway.app/api/leaves/update-status/${leaveId}`,
       null,
       {
         params: { status },

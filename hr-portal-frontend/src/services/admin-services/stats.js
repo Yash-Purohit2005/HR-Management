@@ -4,7 +4,7 @@ import { getToken } from "../authService";
 export const getEmployeeStats = async () => {
   
   const token = getToken();
-   const response = await axios.get("http://localhost:8080/api/admin/employees/stats", {
+   const response = await axios.get("https://hr-management-production-7384.up.railway.app/api/admin/employees/stats", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

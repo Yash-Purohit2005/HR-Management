@@ -12,7 +12,7 @@ export const useLeaveStats = () => {
   useEffect(() => {
   setLoading(true);
   axios
-    .get("http://localhost:8080/api/leaves/stats", {  // ← fixed
+    .get("https://hr-management-production-7384.up.railway.app/api/leaves/stats", {  // ← fixed
       headers: { Authorization: `Bearer ${getToken()}` },
     })
     .then((res) => setStats(res.data))

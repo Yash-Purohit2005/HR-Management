@@ -3,7 +3,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { getToken } from "../authService";
 
-const SOCKET_URL = "http://localhost:8080/ws";
+const SOCKET_URL = "https://hr-management-production-7384.up.railway.app/ws";
 
 let stompClient = null;
 let isConnected = false;

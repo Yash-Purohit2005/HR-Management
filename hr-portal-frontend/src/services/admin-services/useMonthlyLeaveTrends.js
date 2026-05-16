@@ -11,7 +11,7 @@ export const useMonthlyLeaveTrends = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:8080/api/leaves/stats/monthly-trends", {
+      .get("https://hr-management-production-7384.up.railway.app/api/leaves/stats/monthly-trends", {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then((res) => setTrends(res.data))

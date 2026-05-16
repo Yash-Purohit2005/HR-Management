@@ -117,7 +117,7 @@ export default function EditEmployee() {
 
     // Fetch existing employee data
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/admin/employees/${id}`, {
+        axios.get(`https://hr-management-production-7384.up.railway.app/api/admin/employees/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then(({ data }) => {
@@ -153,7 +153,7 @@ export default function EditEmployee() {
         setError(null);
         try {
             await axios.put(
-                `http://localhost:8080/api/admin/employees/update/${id}`,
+                `https://hr-management-production-7384.up.railway.app/api/admin/employees/update/${id}`,
                 formData,
                 { headers: { Authorization: `Bearer ${token}` } }
             );

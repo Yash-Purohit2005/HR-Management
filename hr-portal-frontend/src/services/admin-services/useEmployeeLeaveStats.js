@@ -11,7 +11,7 @@ export const useEmployeeLeaveStats = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:8080/api/leaves/stats/employee-wise", {
+      .get("https://hr-management-production-7384.up.railway.app/api/leaves/stats/employee-wise", {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then((res) => setData(res.data))

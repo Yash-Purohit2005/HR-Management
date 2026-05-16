@@ -67,7 +67,7 @@ function EmployeeTable({ employees = [], refreshData }) {
     try {
       const endpoint = e.active ? "deactivate" : "reactivate";
       await axios.put(
-        `http://localhost:8080/api/admin/employees/${endpoint}/${e.id}`,
+        `https://hr-management-production-7384.up.railway.app/api/admin/employees/${endpoint}/${e.id}`,
         null,
         { headers: { Authorization: `Bearer ${token}` } }
       );
