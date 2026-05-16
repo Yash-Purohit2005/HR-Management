@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1d323f54-8371-4421-992d-68009eb4698d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/java/com/hrportal/PulseHR/Controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/auth/ForgotPassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/ForgotPassword.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hr-portal-frontend/src/auth/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/hr-portal-frontend/src/auth/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +50,7 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "settings.editor.selected.configurable": "configurable.group.appearance",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
