@@ -5,23 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1d323f54-8371-4421-992d-68009eb4698d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/admin/components/EditEmployee.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/admin/components/EditEmployee.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/admin/components/EmployeeTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/admin/components/EmployeeTable.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/createEmployeeAPI.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/createEmployeeAPI.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/getEmployee.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/getEmployee.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/notification.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/recentlogs.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/recentlogs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/stats.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/stats.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useAllLeaves.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useAllLeaves.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useEmployeeLeaveStats.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useEmployeeLeaveStats.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useLeaveStats.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useLeaveStats.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useLeaveTypeBreakdown.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useLeaveTypeBreakdown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useMonthlyLeaveTrends.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/admin-services/useMonthlyLeaveTrends.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/auth-services/setUpPasswordAPI.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/auth-services/setUpPasswordAPI.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/notification/notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hr-portal-frontend/src/services/notification/notification.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PulseHR/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PulseHR/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,22 +44,27 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;Spring Boot.PulseHrApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;stable-working-localhost&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Yash\Downloads\hr-portal\hr-portal\PulseHR" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="PulseHrApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <envs>
         <env name="APP_CONFIG" value="http://localhost:5173" />
         <env name="DB_PASSWORD" value="root" />
-        <env name="JWT_SECRET " value=" Y8tBvnX98kU2nM4eRfLMnoJz34242qe546WhTmC9bXaGeLq71KvsnssDtHzWs=rrdndinirnnrionit598ehss" />
-        <env name="MAIL_PASSWORD" value="hhmoifnuyljjlvcb" />
+        <env name="JWT_SECRET " value=" Y8tBvnX98kU2nM4eRfLMnoJz34242qe546WhTmC9bXaGeLq71KvsnssDtHzWs=" />
+        <env name="MAIL_PASSWORD" value="gzezixggxvnbaurv" />
         <env name="MAIL_USERNAME" value="yashpurohit710@gmail.com" />
       </envs>
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
